@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <title>HyperMusic Player</title>
+  <meta name="description" content="HyperMusic — Player de música com playlists pré-definidas, busca no YouTube, rádio ao vivo e letras sincronizadas.">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="HyperMusic Player">
+  <meta property="og:description" content="Player de música com playlists, YouTube, rádio ao vivo e letras sincronizadas.">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Phosphor Icons -->
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <!-- Player CSS -->
+  <link rel="stylesheet" href="css/player.css">
+
+  <!-- Playlists Data -->
+  <script src="js/playlists.js"></script>
+
+  <style>
+    /* Base styles for standalone operation */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body.modal-open {
+      position: fixed;
+      width: 100%;
+      overflow: hidden;
+    }
+    .hidden { display: none !important; }
+    .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    img { max-width: 100%; height: auto; }
+    button { border: none; background: none; cursor: pointer; font: inherit; color: inherit; }
+    input { font: inherit; }
+
+  </style>
+</head>
+<body>
+
+
+  <!-- ===== PLAYER HTML (inline) ===== -->
+
+
+  <!-- Input de arquivo CSV -->
+  <input id="csv-file-input" type="file" accept=".csv" class="hidden" aria-label="Selecionar arquivo CSV">
+
+  <!-- Player Modal -->
+  <div id="player-modal" class="fixed inset-0 z-50 flex flex-col transition-opacity duration-300 overlay-blur"
+    role="dialog" aria-label="Player de música" tabindex="-1">
+
+    <!-- Header com logo -->
+    <header class="absolute top-0 left-0 right-0 flex-shrink-0 flex items-center justify-center px-4 sm:px-6 mt-8 md:mt-6 mb-0 opacity-90 z-40">
+      <img src="assets/images/HyperMusic.png" alt="HyperMusic" class="h-[96px] md:h-[108px] w-auto object-contain ml-3" style="filter: drop-shadow(0 4px 8px rgba(180, 180, 180, 0.4));">
+    </header>
+
+    <!-- Blur dissolvido do header até abaixo do tabs -->
+    <div id="player-tabs-blur"></div>
+
+    <!-- TELA 0: Descobrir -->
+    <div id="player-screen-discover" class="player-screen flex-1 flex flex-col overflow-hidden relative">
+      <div id="discover-carousel-wrapper" class="discover-carousel-wrapper" style="z-index: 25;">
+        <div id="discover-carousel" class="discover-carousel">
+          <div id="discover-carousel-track" class="discover-carousel-track"></div>
+          <div id="discover-carousel-dots" class="discover-carousel-dots"></div>
+        </div>
+      </div>
+      <div id="discover-container" class="player-scroll-surface absolute inset-0 overflow-y-auto px-4 sm:px-6 scrollbar-hide" style="-webkit-overflow-scrolling: touch; z-index: 20;">
+        <div id="discover-top-spacer" style="pointer-events: none;"></div>
+        <!-- Minhas Playlists -->
+        <div id="my-playlists-section" class="py-4" style="display: none;">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <h3 class="text-white/70 text-xs font-medium flex items-center gap-2 uppercase tracking-wider">
+              <i class="ph-bold ph-playlist text-orange-500/80"></i>
+              Playlists Recentes e Favoritos
+            </h3>
+            <button type="button" id="reorder-playlists-btn" class="my-playlists-reorder-btn" aria-pressed="false"
+              aria-label="Reordenar playlists">
+              <i class="ph-bold ph-arrows-down-up" aria-hidden="true"></i>
+              <span class="reorder-label">Reordenar</span>
+            </button>
+          </div>
+          <div id="my-playlists-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+        </div>
+        <!-- Playlists em Destaque -->
+        <div class="py-4">
+          <h3 class="text-white/70 text-xs font-medium mb-4 flex items-center gap-2 uppercase tracking-wider">
+            <i class="ph-bold ph-lightning text-orange-500/80"></i>
+            Playlists em Destaque
+          </h3>
+          <div id="special-playlists-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+        </div>
+        <!-- Playlists -->
+        <div class="py-4">
+          <h3 class="text-white/70 text-xs font-medium mb-4 flex items-center gap-2 uppercase tracking-wider">
+            <i class="ph-bold ph-music-notes text-orange-500/80"></i>
+            Playlists
+          </h3>
+          <div id="featured-playlists-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 1: Playlist (Biblioteca) -->
+    <div id="player-screen-playlist" class="player-screen flex-1 flex flex-col hidden relative" style="overflow: visible !important;">
+      <video id="playlist-video-bg" autoplay muted loop playsinline
+             class="absolute top-0 left-1/2 -translate-x-1/2 max-w-none object-cover pointer-events-none opacity-45 hidden"
+             style="width: 100vw; max-width: none !important; height: 500px; z-index: 0; mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);">
+      </video>
+      <div id="tracks-container" class="player-scroll-surface absolute inset-0 overflow-y-auto px-3 sm:px-5 scrollbar-hide" style="-webkit-overflow-scrolling: touch; z-index: 20;">
+        <div id="playlist-empty-state"
+          class="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
+          <i class="ph-bold ph-music-notes-plus text-2xl sm:text-3xl text-white/20 mb-1.5 sm:mb-2"></i>
+          <p class="text-white/60 text-[11px] sm:text-xs font-medium mb-2 sm:mb-3">Importe sua biblioteca de músicas</p>
+          <div class="w-full max-w-[260px] space-y-1.5 text-left mb-2 sm:mb-3">
+            <div class="flex gap-1.5 items-start p-1.5 rounded-lg bg-white/5 border border-white/10">
+              <div class="w-4 h-4 rounded bg-orange-500/20 flex items-center justify-center text-[9px] font-bold text-orange-400 shrink-0">1</div>
+              <div class="text-[10px] text-white/70 leading-snug">
+                <p class="font-medium text-white/90 mb-0">Selecionar a fonte</p>
+                <p>Abra o <a class="underline text-orange-400 hover:text-orange-300" href="https://www.tunemymusic.com/pt/transfer" target="_blank" rel="noopener noreferrer">TuneMyMusic</a>, escolha a origem e faça login</p>
+              </div>
+            </div>
+            <div class="flex gap-1.5 items-start p-1.5 rounded-lg bg-white/5 border border-white/10">
+              <div class="w-4 h-4 rounded bg-orange-500/20 flex items-center justify-center text-[9px] font-bold text-orange-400 shrink-0">2</div>
+              <div class="text-[10px] text-white/70 leading-snug">
+                <p class="font-medium text-white/90 mb-0">Exportar CSV</p>
+                <p>Escolha "Exportar para ARQUIVO" e selecione CSV</p>
+              </div>
+            </div>
+            <div class="flex gap-1.5 items-start p-1.5 rounded-lg bg-white/5 border border-white/10">
+              <div class="w-4 h-4 rounded bg-orange-500/20 flex items-center justify-center text-[9px] font-bold text-orange-400 shrink-0">3</div>
+              <div class="text-[10px] text-white/70 leading-snug">
+                <p class="font-medium text-white/90 mb-0">Importar no HyperMusic</p>
+                <p>Toque no ícone de configurações no topo e selecione "Importar CSV"</p>
+              </div>
+            </div>
+          </div>
+          <p class="text-white/40 text-[8px] sm:text-[9px] mt-1">Compatível com Spotify, TIDAL, Apple Music, YouTube Music e outros</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 2: YouTube Search -->
+    <div id="player-screen-youtube" class="player-screen flex-1 flex flex-col min-h-0 hidden relative" style="overflow: visible !important;">
+      <div id="youtube-search-content" class="player-scroll-surface absolute inset-0 overflow-y-auto px-3 sm:px-5 scrollbar-hide" style="-webkit-overflow-scrolling: touch;">
+        <div id="youtube-empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-6" style="padding-top: 40px;">
+          <i class="ph-bold ph-youtube-logo text-5xl text-white/20 mb-4"></i>
+          <p class="text-white/50 text-sm">Busque músicas e playlists diretamente no YouTube</p>
+          <p class="text-white/30 text-xs mt-1">Os resultados aparecerão aqui</p>
+        </div>
+        <div id="manual-search-results" class="hidden"></div>
+      </div>
+    </div>
+
+    <!-- TELA 3: Rádio -->
+    <div id="player-screen-radio" class="player-screen flex-1 flex flex-col min-h-0 hidden relative">
+      <div id="radio-channels-container" class="player-scroll-surface absolute inset-0 overflow-y-auto px-4 sm:px-6 scrollbar-hide" style="-webkit-overflow-scrolling: touch; z-index: 20;">
+        <div class="py-4 pt-8">
+          <h3 class="text-white/70 text-xs font-medium mb-4 flex items-center gap-2 uppercase tracking-wider">
+            <i class="ph-bold ph-lightning text-orange-500/80"></i>
+            Destaques do Canal
+          </h3>
+          <div id="radio-featured-row" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4"></div>
+        </div>
+        <div class="py-4">
+          <h3 class="text-white/70 text-xs font-medium mb-4 flex items-center gap-2 uppercase tracking-wider">
+            <i class="ph-bold ph-radio text-orange-500/80"></i>
+            Todos os Canais
+          </h3>
+          <div id="radio-channels-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botões do Player (fora do modal para blur funcionar) -->
+  <div id="player-header-buttons" class="fixed top-0 left-0 right-0 z-[52] flex items-center justify-between px-4 sm:px-6 pt-4 transition-opacity duration-300">
+    <button id="player-settings-btn"
+      class="player-glass-btn w-10 h-10 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all duration-300"
+      aria-label="Configurações do player">
+      <span class="liquid-glass-edge"></span>
+      <i class="ph-bold ph-gear-six text-base transition-transform duration-300 hover:rotate-90" aria-hidden="true"></i>
+    </button>
+    
+    <div class="flex items-center gap-3">
+      <button id="player-notifications-btn"
+        class="player-glass-btn w-10 h-10 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all duration-300"
+        aria-label="Notificações">
+        <span class="liquid-glass-edge"></span>
+        <i class="ph-bold ph-bell text-base" aria-hidden="true"></i>
+      </button>
+      <button id="player-profile-btn"
+        class="player-glass-btn w-10 h-10 rounded-full flex items-center justify-center text-white/70 hover:text-white transition-all duration-300 overflow-hidden"
+        aria-label="Perfil do usuário">
+        <span class="liquid-glass-edge"></span>
+        <i class="ph-bold ph-user text-base" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Player Settings Overlay -->
+  <div id="player-settings-overlay" class="fixed inset-0 z-[55] pointer-events-none overlay-blur"
+    style="display:none; transition: opacity 0.25s ease;"></div>
+
+  <!-- Player Settings Dropdown -->
+  <div id="player-settings-dropdown" class="fixed z-[56] hidden opacity-0 transition-all duration-200 origin-top-left scale-95"
+    style="min-width: 200px;">
+    <div class="flex items-center gap-2">
+      <button id="settings-import-csv-btn"
+        class="player-glass-btn flex-1 px-4 py-3 flex items-center gap-3 text-white/70 hover:text-white transition-all duration-300 text-sm rounded-full">
+        <span class="liquid-glass-edge"></span>
+        <i class="ph-bold ph-file-csv"></i>
+        Importar CSV
+      </button>
+      <button id="settings-import-info-btn"
+        class="player-glass-btn w-12 h-12 flex items-center justify-center text-white/70 hover:text-white transition-all duration-300 text-sm shrink-0 rounded-full"
+        aria-label="Como importar">
+        <span class="liquid-glass-edge"></span>
+        <i class="ph-bold ph-info"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Player Feedback -->
+  <div id="player-feedback" class="player-bar fixed opacity-0 invisible pointer-events-none transition-all duration-300" style="pointer-events: none;">
+    <div class="liquid-glass-edge" aria-hidden="true"></div>
+    <div class="flex items-center gap-3 relative" style="z-index: 2;">
+      <div id="player-feedback-icon" class="w-11 h-11 rounded-xl flex items-center justify-center hidden">
+        <i class="text-xl"></i>
+      </div>
+      <img id="player-feedback-cover" src="" alt="" class="object-cover hidden" />
+      <div class="flex-1 min-w-0">
+        <div id="player-feedback-title" class="truncate hidden"></div>
+        <span id="player-feedback-text"></span>
+      </div>
+      <span class="player-feedback-badge">Agora</span>
+    </div>
+  </div>
+
+  <!-- Modal de Informações sobre Importação -->
+  <div id="import-info-modal"
+    class="fixed inset-0 overlay-blur z-[60] flex items-center justify-center p-4 opacity-0 invisible transition-opacity duration-300"
+    role="dialog" aria-labelledby="import-info-title" style="pointer-events: none;">
+    <div class="modal-card liquid-glass relative w-full max-w-sm glass-effect rounded-3xl p-5 pt-4 transform scale-95 transition-all duration-300 overflow-hidden"
+      tabindex="-1">
+      <div class="flex items-center justify-center relative mb-4">
+        <h2 id="import-info-title" class="text-sm font-semibold text-white/80 text-center">Traga suas playlists</h2>
+        <button id="close-import-info-modal"
+          class="player-glass-btn absolute right-0 text-white/90 w-9 h-9 rounded-full hover:text-white flex items-center justify-center transition-all duration-300 shrink-0"
+          aria-label="Fechar">
+          <span class="liquid-glass-edge"></span>
+          <i class="ph-bold ph-x text-sm transition-transform duration-300 hover:rotate-90" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="space-y-2 max-h-[60vh] overflow-y-auto scrollbar-hide -mt-5">
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="w-5 h-5 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0">
+              <span class="text-orange-400 text-[10px] font-bold leading-none">1</span>
+            </div>
+            <h3 class="text-white font-semibold text-xs leading-none">Exportar sua Playlist</h3>
+          </div>
+          <p class="text-white/70 text-[11px] leading-snug -mt-0.5 pl-7">Acesse <a href="https://www.tunemymusic.com" target="_blank" class="text-orange-400 hover:text-orange-300 underline">TuneMyMusic</a> e exporte sua playlist para CSV.</p>
+          <p class="text-white/50 text-[10px] leading-snug mt-0.5 pl-7"><i class="ph ph-info"></i> Compatível com Spotify, TIDAL, Apple Music, YouTube Music e outros</p>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="w-5 h-5 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0">
+              <span class="text-orange-400 text-[10px] font-bold leading-none">2</span>
+            </div>
+            <h3 class="text-white font-semibold text-xs leading-none">Importar no HyperMusic</h3>
+          </div>
+          <p class="text-white/70 text-[11px] leading-snug -mt-0.5 pl-7">Toque no ícone de configurações no topo do player e selecione "Importar CSV".</p>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="w-5 h-5 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0">
+              <span class="text-orange-400 text-[10px] font-bold leading-none">3</span>
+            </div>
+            <h3 class="text-white font-semibold text-xs leading-none">Aproveite!</h3>
+          </div>
+          <p class="text-white/70 text-[11px] leading-snug -mt-0.5 pl-7">Suas músicas serão importadas e você poderá ouvi-las no player.</p>
+        </div>
+        <div class="mt-8 p-3 rounded-xl bg-orange-500/10">
+          <div class="flex items-center gap-2">
+            <i class="ph-bold ph-lightbulb text-orange-400 text-sm flex-shrink-0 leading-none"></i>
+            <h4 class="text-orange-300 font-semibold text-xs leading-none">Dica</h4>
+          </div>
+          <p class="text-white/70 text-[11px] leading-snug -mt-0.5 pl-[26px]">Você também pode importar playlists do YouTube pela aba "YouTube" no player!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player Tabs (fora do modal para blur funcionar) -->
+  <div id="player-tabs-bar" class="player-bar fixed transition-opacity duration-300">
+    <div class="liquid-glass-edge" aria-hidden="true"></div>
+    <div class="tabs-container" style="position: relative; z-index: 2;">
+      <button id="tab-discover" class="player-tab active">
+        <i class="ph-bold ph-compass"></i>
+        <span>Descobrir</span>
+      </button>
+      <button id="tab-playlist" class="player-tab">
+        <i class="ph-bold ph-playlist"></i>
+        <span>Biblioteca</span>
+      </button>
+      <button id="tab-youtube" class="player-tab">
+        <i class="ph-bold ph-youtube-logo"></i>
+        <span>YouTube</span>
+      </button>
+      <button id="tab-radio" class="player-tab">
+        <i class="ph-bold ph-broadcast"></i>
+        <span>Rádio</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- YouTube Search Button (botão compacto) -->
+  <div id="youtube-search-btn-container" class="fixed opacity-0 invisible" style="bottom: 112px; left: 50%; transform: translateX(-50%); z-index: 51; pointer-events: none;">
+    <button id="youtube-search-trigger" class="player-glass-btn" style="
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 14px;
+      border-radius: 9999px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.55);
+      font-size: 13px;
+      font-weight: 400;
+      font-family: inherit;
+      transition: background 0.2s ease, transform 0.15s ease;
+    ">
+      <span class="liquid-glass-edge"></span>
+      <i class="ph ph-magnifying-glass" style="font-size: 13px;"></i>
+      <span>Buscar</span>
+    </button>
+  </div>
+
+  <!-- YouTube Search Modal -->
+  <div id="youtube-search-overlay" class="fixed inset-0 z-[60]" style="opacity: 0; visibility: hidden; pointer-events: none; background: rgba(0,0,0,0.5); backdrop-filter: none; -webkit-backdrop-filter: none; transition: opacity 0.25s ease, visibility 0.25s ease;"></div>
+  <div id="youtube-search-bar-wrapper" class="fixed z-[61]" style="opacity: 0; visibility: hidden; pointer-events: none; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: row; align-items: center; gap: 10px; width: calc(100% - 24px); max-width: 900px; transition: opacity 0.25s ease, visibility 0.25s ease;">
+    <button id="youtube-search-cancel" class="player-glass-btn" style="width: 46px; height: 46px; flex-shrink: 0; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+      <span class="liquid-glass-edge"></span>
+      <i class="ph-bold ph-x" style="color: rgba(255,255,255,0.7); font-size: 16px;"></i>
+    </button>
+    <div id="youtube-search-bar" class="player-glass-btn" style="flex: 1; height: 46px; padding: 0 18px; border-radius: 9999px; display: flex; align-items: center;">
+      <span class="liquid-glass-edge"></span>
+      <div style="display: flex; align-items: center; width: 100%; gap: 8px; position: relative; z-index: 2;">
+        <div class="relative flex-1" style="background: transparent;">
+          <input type="text" id="manual-search-input" placeholder="O que quer ouvir?" autocomplete="off"
+            class="w-full h-[26px] bg-transparent border-none py-0 pl-2 pr-4 text-sm text-white placeholder-white/35 focus:outline-none" style="background: transparent;" />
+        </div>
+        <div id="youtube-search-type-toggle" style="display: flex; align-items: center; justify-content: center; gap: 4px; padding: 3px; background: rgba(255,255,255,0.05); border-radius: 16px; flex-shrink: 0;">
+          <button id="search-type-tracks" class="search-type-btn active" style="padding: 5px 8px; border: none; border-radius: 12px; font-size: 12px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; background: rgba(255,122,31,0.8); color: white;">
+            <i class="ph-bold ph-music-notes"></i>
+          </button>
+          <button id="search-type-playlists" class="search-type-btn" style="padding: 5px 8px; border: none; border-radius: 12px; font-size: 12px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; background: transparent; color: rgba(255,255,255,0.5);">
+            <i class="ph-bold ph-playlist"></i>
+          </button>
+        </div>
+        <button id="manual-search-btn" style="width: 26px; height: 26px; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;" disabled>
+          <i class="ph-bold ph-magnifying-glass" style="color: rgba(255,255,255,0.5); font-size: 14px;"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player Controls Blur -->
+  <div id="player-controls-blur" class="fixed transition-opacity duration-300"></div>
+
+  <!-- Expanded Cover Blur -->
+  <div id="expanded-cover-blur" class="fixed opacity-0 invisible" style="pointer-events: none;"></div>
+
+  <!-- Liquid Glass SVG Filter -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="liquid-glass-refract" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feImage href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%23000000'/%3E%3Cstop offset='0.08' stop-color='%23800000'/%3E%3Cstop offset='0.92' stop-color='%23800000'/%3E%3Cstop offset='1' stop-color='%23ff0000'/%3E%3C/linearGradient%3E%3Crect width='1' height='1' fill='url(%23g)'/%3E%3C/svg%3E" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="mapX"/>
+      <feImage href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23004000'/%3E%3Cstop offset='1' stop-color='%2300c000'/%3E%3C/linearGradient%3E%3Crect width='1' height='1' fill='url(%23g)'/%3E%3C/svg%3E" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="mapY"/>
+      <feComposite in="mapX" in2="mapY" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="map"/>
+      <feDisplacementMap in="SourceGraphic" in2="map" scale="60" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="liquid-glass-refract-soft" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feImage href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%23000000'/%3E%3Cstop offset='0.08' stop-color='%23800000'/%3E%3Cstop offset='0.92' stop-color='%23800000'/%3E%3Cstop offset='1' stop-color='%23ff0000'/%3E%3C/linearGradient%3E%3Crect width='1' height='1' fill='url(%23g)'/%3E%3C/svg%3E" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="mapX"/>
+      <feImage href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1' preserveAspectRatio='none'%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23004000'/%3E%3Cstop offset='1' stop-color='%2300c000'/%3E%3C/linearGradient%3E%3Crect width='1' height='1' fill='url(%23g)'/%3E%3C/svg%3E" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="mapY"/>
+      <feComposite in="mapX" in2="mapY" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="map"/>
+      <feDisplacementMap in="SourceGraphic" in2="map" scale="30" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
+  <!-- Player Controls Bar -->
+  <div id="player-controls-bar" class="player-bar fixed transition-opacity duration-300">
+    <div class="liquid-glass-edge" aria-hidden="true"></div>
+    <!-- Capa expandida -->
+    <div id="expanded-cover-wrapper" class="expanded-cover-wrapper">
+      <div class="expanded-cover-topbar">
+        <div id="cover-mode-toggle" class="cover-mode-toggle player-glass-btn" role="tablist" aria-label="Alternar entre capa e vídeo">
+          <span class="liquid-glass-edge"></span>
+          <button type="button" class="cover-mode-btn active" data-mode="cover" role="tab" aria-label="Capa">
+            <i class="ph-bold ph-headphones" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="cover-mode-btn" data-mode="video" role="tab" aria-label="Vídeo" disabled aria-disabled="true">
+            <i class="ph-bold ph-video-camera" aria-hidden="true"></i>
+          </button>
+        </div>
+        <button type="button" id="cover-share-btn" class="cover-share-btn player-glass-btn flex items-center justify-center text-white/70 hover:text-white transition-all duration-300" aria-label="Compartilhar música">
+          <span class="liquid-glass-edge"></span>
+          <i class="ph-bold ph-share-network" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div id="expanded-lyrics" class="expanded-lyrics" aria-hidden="true">
+        <div class="lyrics-scroll"></div>
+        <p class="lyrics-loading">...</p>
+        <p class="lyrics-empty">Letras não disponíveis</p>
+        <span class="lyrics-sync-indicator" aria-hidden="true"></span>
+      </div>
+      <div class="expanded-cover-stage">
+        <img id="ctrl-expanded-cover" src="assets/images/genericCover.png" alt="Capa">
+      </div>
+    </div>
+    <div class="controls-inner">
+      <div class="controls-group">
+        <button id="ctrl-shuffle" aria-label="Aleatório"><i class="ph-bold ph-shuffle"></i></button>
+        <button id="ctrl-prev" class="prev-btn" aria-label="Anterior"><i class="ph-bold ph-skip-back"></i></button>
+        <button id="ctrl-play" class="play-btn" aria-label="Play/Pause"><i class="ph-bold ph-pause"></i></button>
+        <button id="ctrl-next" class="next-btn" aria-label="Próxima"><i class="ph-bold ph-skip-forward"></i></button>
+        <button id="ctrl-repeat" aria-label="Repetir"><i class="ph-bold ph-repeat"></i></button>
+      </div>
+      <div class="controls-center">
+        <div id="ctrl-cover" class="cover-container">
+          <img src="assets/images/genericCover.png" alt="Capa">
+          <div class="ctrl-wave-overlay">
+            <div class="ctrl-wave-bar"></div>
+            <div class="ctrl-wave-bar"></div>
+            <div class="ctrl-wave-bar"></div>
+            <div class="ctrl-wave-bar"></div>
+          </div>
+        </div>
+        <div class="info-container">
+          <p id="ctrl-title" class="track-title">Nenhuma música</p>
+          <p id="ctrl-artist" class="track-artist">—</p>
+        </div>
+      </div>
+      <div class="controls-group volume-control">
+        <button id="ctrl-volume-btn" aria-label="Mudo"><i class="ph-bold ph-speaker-high"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Player de vídeo (clipe oficial) -->
+  <div id="expanded-video-wrapper" class="expanded-video-wrapper" aria-hidden="true">
+    <div id="yt-video-host"></div>
+    <div id="video-overlay" class="video-overlay">
+      <button id="video-fullscreen-btn" class="video-fullscreen-btn player-glass-btn" type="button" aria-label="Tela cheia">
+        <span class="liquid-glass-edge"></span>
+        <i class="ph-bold ph-arrows-out" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal de seleção de playlist -->
+  <div id="playlist-picker-modal"
+    class="fixed inset-0 overlay-blur z-[60] flex items-center justify-center p-4 opacity-0 invisible transition-opacity duration-300"
+    role="dialog" aria-labelledby="playlist-picker-title" inert style="pointer-events: none;">
+    <div id="playlist-picker-card"
+      class="modal-card liquid-glass relative w-full max-w-sm glass-effect rounded-3xl p-5 pt-7 transform scale-95 transition-all duration-300 overflow-hidden"
+      tabindex="-1">
+      <button id="close-playlist-picker-btn"
+        class="player-glass-btn absolute top-3 right-3 text-white/90 w-9 h-9 rounded-full hover:text-white flex items-center justify-center z-30 transition-all transform hover:scale-110 hover:rotate-90"
+        aria-label="Fechar">
+        <span class="liquid-glass-edge"></span>
+        <i class="ph-bold ph-x text-sm" aria-hidden="true"></i>
+      </button>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-11 h-11 rounded-xl bg-orange-500/20 flex items-center justify-center flex-shrink-0">
+          <i class="ph-bold ph-music-notes text-orange-400 text-lg"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 id="playlist-picker-title" class="text-sm font-semibold text-white/90">Adicionar à playlist</h3>
+          <p id="playlist-picker-track" class="text-xs text-white/50 truncate mt-0.5 max-w-[220px]"></p>
+        </div>
+      </div>
+      <div id="playlist-picker-list" class="max-h-64 overflow-y-auto scrollbar-hide space-y-1"></div>
+      <div class="mt-4 pt-3" style="border-top: 1px dashed rgba(255, 255, 255, 0.1);">
+        <div id="new-playlist-form" class="hidden">
+          <div class="flex items-center gap-2">
+            <input type="text" id="new-playlist-name" placeholder="Nome da nova playlist..."
+              class="flex-1 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-sm text-white placeholder-white/40 focus:outline-none focus:border-orange-500/50" />
+            <button id="confirm-new-playlist-btn"
+              class="px-3 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg text-sm font-medium text-white transition-colors">
+              Criar
+            </button>
+            <button id="cancel-new-playlist-btn"
+              class="px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm text-white/70 transition-colors">
+              <i class="ph-bold ph-x"></i>
+            </button>
+          </div>
+        </div>
+        <button id="show-new-playlist-btn"
+          class="w-full py-3 rounded-xl text-white font-bold text-sm transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2" style="background: rgba(255, 122, 31, 0.6); border: 1px solid rgba(255, 122, 31, 0.4); box-shadow: 0 0 20px rgba(255, 122, 31, 0.3), 0 4px 12px rgba(255, 122, 31, 0.2);">
+          <i class="ph-bold ph-plus-circle"></i>
+          <span>Criar nova playlist</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Players -->
+  <audio id="audio-player" preload="none" aria-label="Player de áudio para música"></audio>
+  <audio id="radio-audio-player" preload="none" aria-label="Player de rádio ao vivo"></audio>
+
+  <!-- Player JS -->
+  <script src="js/player.js"></script>
+
+
+</body>
+</html>

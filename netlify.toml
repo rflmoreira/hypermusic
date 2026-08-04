@@ -1,0 +1,42 @@
+[build]
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+  AWS_LAMBDA_JS_RUNTIME = "nodejs20.x"
+  SECRETS_SCAN_ENABLED = "false"
+
+[[redirects]]
+  from = "/proxy"
+  to = "/.netlify/functions/proxy"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/youtube"
+  to = "/.netlify/functions/youtube"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/audio"
+  to = "/.netlify/functions/audio"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/fourshared"
+  to = "/.netlify/functions/fourshared"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/deezer"
+  to = "/.netlify/functions/deezer"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
