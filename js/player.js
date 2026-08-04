@@ -4613,8 +4613,8 @@ const MUSIC_PLAYER = (() => {
   // faixas DESSA playlist, troca pela capa da faixa atual.
   //
   // URLs em custom properties usadas no ::before de player.css são resolvidas
-  // em relação a src/player/player.css — por isso caminhos document-relative
-  // (assets/images/...) precisam virar ../imagens/... Capas https:// não mudam.
+  // em relação a css/player.css — por isso caminhos document-relative
+  // (assets/images/...) precisam virar ../assets/images/... Capas https:// não mudam.
   function toPlaylistBackgroundCssUrl(url) {
     if (!url) return null;
     const raw = String(url).trim();

@@ -20,7 +20,7 @@ Player de música standalone com interface moderna, playlists pré-definidas, bu
 ## 📁 Estrutura do Projeto
 
 ```
-player/
+HyperMusic/
 ├── assets/
 │   ├── images/          # Capas das playlists e ícones
 │   │   └── radio/       # Imagens dos canais de rádio
@@ -30,7 +30,10 @@ player/
 ├── js/
 │   ├── player.js        # Core do player (MUSIC_PLAYER)
 │   └── playlists.js     # Dados das playlists pré-definidas
+├── netlify/
+│   └── functions/       # Netlify Functions (backend serverless)
 ├── index.html           # Página standalone
+├── netlify.toml         # Configuração do Netlify
 ├── README.md            # Esta documentação
 └── LICENSE              # Licença MIT
 ```
@@ -55,7 +58,7 @@ python3 -m http.server 8080
 
 ### Incorporar em Outro Site
 
-1. Copie a pasta `player/` para o seu projeto
+1. Copie a pasta do projeto para o seu diretório
 2. Adicione os CDNs e o CSS no `<head>`:
 
 ```html
@@ -69,7 +72,7 @@ python3 -m http.server 8080
   <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
   
   <!-- Player CSS -->
-  <link rel="stylesheet" href="player/css/player.css">
+  <link rel="stylesheet" href="css/player.css">
 </head>
 ```
 
@@ -78,8 +81,8 @@ python3 -m http.server 8080
 4. Adicione os scripts antes de `</body>`:
 
 ```html
-<script src="player/js/playlists.js"></script>
-<script src="player/js/player.js"></script>
+<script src="js/playlists.js"></script>
+<script src="js/player.js"></script>
 ```
 
 5. Abra o player via JavaScript:
