@@ -67,6 +67,30 @@
 
   <!-- ===== PLAYER HTML (inline) ===== -->
 
+  <!-- ===== ANÚNCIOS (Apenas Desktop) ===== -->
+  <!-- Anúncio Lateral Esquerdo -->
+  <aside class="hidden xl:flex fixed left-0 top-0 bottom-0 w-[160px] 2xl:w-[300px] flex-col justify-center items-center bg-[#0a0a0a] border-r border-white/5 z-[60]" aria-hidden="true">
+    <div class="flex items-center justify-center text-white/20 text-xs bg-white/5 rounded" style="width: 160px; height: 600px;">
+      <!-- Código do anúncio (Ex: 160x600) -->
+      <span>Anúncio</span>
+    </div>
+  </aside>
+
+  <!-- Anúncio Lateral Direito -->
+  <aside class="hidden xl:flex fixed right-0 top-0 bottom-0 w-[160px] 2xl:w-[300px] flex-col justify-center items-center bg-[#0a0a0a] border-l border-white/5 z-[60]" aria-hidden="true">
+    <div class="flex items-center justify-center text-white/20 text-xs bg-white/5 rounded" style="width: 160px; height: 600px;">
+      <!-- Código do anúncio (Ex: 160x600) -->
+      <span>Anúncio</span>
+    </div>
+  </aside>
+
+  <!-- Banner Inferior (Abaixo da player-controls-bar) -->
+  <div id="bottom-ad-banner" class="hidden lg:flex fixed bottom-0 left-0 right-0 h-[90px] justify-center items-center bg-[#0a0a0a] border-t border-white/10 z-[60]" aria-hidden="true">
+    <div class="flex items-center justify-center text-white/20 text-xs bg-white/5 rounded" style="width: 728px; height: 90px;">
+      <!-- Código do banner (Ex: 728x90) -->
+      <span>Banner 728x90</span>
+    </div>
+  </div>
 
   <!-- Input de arquivo CSV -->
   <input id="csv-file-input" type="file" accept=".csv" class="hidden" aria-label="Selecionar arquivo CSV">
