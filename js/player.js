@@ -5747,9 +5747,10 @@ const MUSIC_PLAYER = (() => {
       let itemHtml = renderYoutubePlaylistItemHtml(playlist, idx > 0 ? 'mt-1' : '');
       // Injeta Native Banner após a 3ª playlist
       if (idx === 2 || (playlists.length < 3 && idx === playlists.length - 1)) {
+        const frameId = 'ad-' + Math.random().toString(36).substr(2, 9);
         itemHtml += `
           <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; width: 100%;">
-            <iframe src="ad-native.html" style="width: 100%; height: 320px; border: none; overflow: hidden;" scrolling="no"></iframe>
+            <iframe id="${frameId}" src="ad-native.html?id=${frameId}" style="width: 100%; height: 320px; border: none; overflow: hidden; transition: height 0.3s;" scrolling="no"></iframe>
           </div>
         `;
       }
@@ -5863,9 +5864,10 @@ const MUSIC_PLAYER = (() => {
               let itemHtml = renderYoutubePlaylistItemHtml(playlist);
               // Injeta Native Banner após a 3ª playlist
               if (idx === 2 || (playlists.length < 3 && idx === playlists.length - 1)) {
+                const frameId = 'ad-' + Math.random().toString(36).substr(2, 9);
                 itemHtml += `
                   <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; width: 100%;">
-                    <iframe src="ad-native.html" style="width: 100%; height: 320px; border: none; overflow: hidden;" scrolling="no"></iframe>
+                    <iframe id="${frameId}" src="ad-native.html?id=${frameId}" style="width: 100%; height: 320px; border: none; overflow: hidden; transition: height 0.3s;" scrolling="no"></iframe>
                   </div>
                 `;
               }
@@ -5923,9 +5925,10 @@ const MUSIC_PLAYER = (() => {
 
         // Injeta Native Banner após o 3º vídeo apenas na primeira busca (não na paginação)
         if (!append && (idx === 2 || (videos.length < 3 && idx === videos.length - 1))) {
+          const frameId = 'ad-' + Math.random().toString(36).substr(2, 9);
           videoHtml += `
             <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; width: 100%;">
-              <iframe src="ad-native.html" style="width: 100%; height: 320px; border: none; overflow: hidden;" scrolling="no"></iframe>
+              <iframe id="${frameId}" src="ad-native.html?id=${frameId}" style="width: 100%; height: 320px; border: none; overflow: hidden; transition: height 0.3s;" scrolling="no"></iframe>
             </div>
           `;
         }
@@ -9089,9 +9092,10 @@ const MUSIC_PLAYER = (() => {
 
       // Injeta Native Banner da Adsterra após a 3ª música (index 2) ou no fim se a playlist for muito curta
       if (index === 2 || (tracks.length < 3 && index === tracks.length - 1)) {
+        const frameId = 'ad-' + Math.random().toString(36).substr(2, 9);
         trackHtml += `
           <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; width: 100%;">
-            <iframe src="ad-native.html" style="width: 100%; height: 320px; border: none; overflow: hidden;" scrolling="no"></iframe>
+            <iframe id="${frameId}" src="ad-native.html?id=${frameId}" style="width: 100%; height: 320px; border: none; overflow: hidden; transition: height 0.3s;" scrolling="no"></iframe>
           </div>
         `;
       }
@@ -11097,3 +11101,13 @@ window.HyperMusicPlayer = {
   /** @internal Referência ao módulo completo para uso avançado */
   _internal: MUSIC_PLAYER
 };
+
+// Listener global para auto-resize dos anúncios Adsterra
+window.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'adsterra-resize' && event.data.id && event.data.height) {
+    const iframe = document.getElementById(event.data.id);
+    if (iframe) {
+      iframe.style.height = event.data.height + 'px';
+    }
+  }
+});
