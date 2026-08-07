@@ -24,6 +24,27 @@
       color: #ffffff !important;
       text-decoration: none !important;
     }
+    
+    /* HACK: Força o layout 1x1 via CSS caso o painel da Adsterra esteja com cache em 1x2 */
+    [class$="__stand"] {
+      display: flex !important;
+      justify-content: center !important;
+      flex-wrap: wrap !important;
+      width: 100% !important;
+    }
+    
+    /* Oculta completamente do 2º banner em diante */
+    [class$="__bn-container"]:nth-child(n+2) {
+      display: none !important;
+    }
+    
+    /* Garante que o 1º banner ocupe o espaço ideal */
+    [class$="__bn-container"]:first-child {
+      display: flex !important;
+      width: 100% !important;
+      max-width: 350px !important;
+      margin: 0 auto !important;
+    }
   </style>
 </head>
 <body>
