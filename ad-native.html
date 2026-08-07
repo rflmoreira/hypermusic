@@ -45,6 +45,21 @@
       max-width: 350px !important;
       margin: 0 auto !important;
     }
+    
+    /* Fallback para bloqueadores de anúncios (Adblock) */
+    #container-49b9fc663654c5ec16753931eb73072a:empty::before {
+      content: "Espaço publicitário";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 320px; /* Mesma altura do iframe */
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.22);
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+      letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
