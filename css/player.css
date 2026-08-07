@@ -2599,7 +2599,7 @@ body.video-fullscreen-active #player-launcher {
 }
 
 #youtube-search-btn-container {
-  bottom: calc(186px + env(safe-area-inset-bottom, 0px)) !important;
+  bottom: calc(156px + env(safe-area-inset-bottom, 0px)) !important;
 }
 
 @media (max-width: 480px) {
