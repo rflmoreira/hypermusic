@@ -67,8 +67,57 @@
 
   <!-- ===== PLAYER HTML (inline) ===== -->
 
-  <!-- ===== ANÚNCIOS AGRESSIVOS (Monetag) ===== -->
-  <!-- O script Multitag ou Popunder deve ser colado abaixo. Ele é invisível e roda em segundo plano. -->
+  <!-- ===== ANÚNCIOS (Banners Fixos) ===== -->
+  <!-- Anúncio Lateral Esquerdo -->
+  <aside class="hidden xl:flex fixed left-0 top-0 bottom-0 w-[160px] 2xl:w-[300px] flex-col justify-center items-center bg-[#0a0a0a] border-r border-white/5 z-[60]" aria-hidden="true">
+    <div id="ad-banner-left" class="flex items-center justify-center text-white/20 text-xs bg-white/5 rounded" style="width: 160px; height: 600px;">
+      <script>
+        atOptions = {
+          'key' : '0e0381daf7b7a590eb5f354911ae6938',
+          'format' : 'iframe',
+          'height' : 600,
+          'width' : 160,
+          'params' : {}
+        };
+      </script>
+      <script src="https://www.highperformanceformat.com/0e0381daf7b7a590eb5f354911ae6938/invoke.js"></script>
+    </div>
+  </aside>
+
+  <!-- Anúncio Lateral Direito -->
+  <aside class="hidden xl:flex fixed right-0 top-0 bottom-0 w-[160px] 2xl:w-[300px] flex-col justify-center items-center bg-[#0a0a0a] border-l border-white/5 z-[60]" aria-hidden="true">
+    <div id="ad-banner-right" class="flex items-center justify-center text-white/20 text-xs bg-white/5 rounded" style="width: 160px; height: 600px;">
+      <script>
+        atOptions = {
+          'key' : '0e0381daf7b7a590eb5f354911ae6938',
+          'format' : 'iframe',
+          'height' : 600,
+          'width' : 160,
+          'params' : {}
+        };
+      </script>
+      <script src="https://www.highperformanceformat.com/0e0381daf7b7a590eb5f354911ae6938/invoke.js"></script>
+    </div>
+  </aside>
+
+  <!-- Banner Inferior -->
+  <div id="bottom-ad-banner" class="hidden lg:flex fixed bottom-0 left-0 right-0 h-[90px] justify-center items-center bg-[#0a0a0a] border-t border-white/10 z-[60]" aria-hidden="true">
+    <div id="ad-banner-bottom" class="flex items-center justify-center text-white/20 text-xs bg-white/5 rounded" style="width: 728px; height: 90px;">
+      <script>
+        atOptions = {
+          'key' : '001ffebf2aec3ab0c956474e5b34d7c9',
+          'format' : 'iframe',
+          'height' : 90,
+          'width' : 728,
+          'params' : {}
+        };
+      </script>
+      <script src="https://www.highperformanceformat.com/001ffebf2aec3ab0c956474e5b34d7c9/invoke.js"></script>
+    </div>
+  </div>
+
+  <!-- ===== ANÚNCIOS AGRESSIVOS (Social Bar / Popunder) ===== -->
+  <!-- O script invisível roda em segundo plano. -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="267696" async data-cfasync="false"></script>
 
   <!-- Input de arquivo CSV -->
