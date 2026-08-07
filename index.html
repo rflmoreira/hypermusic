@@ -192,67 +192,6 @@
     </div>
   </div>
 
-  <!-- ===== ANÚNCIOS AGRESSIVOS (Monetag - In-Page Push / Multitag) ===== -->
-  <!-- O script invisível roda em segundo plano. -->
-  <script src="https://quge5.com/88/tag.min.js" data-zone="267696" async data-cfasync="false"></script>
-  <script>(function(s){s.dataset.zone='11521166',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  <script>(function(s){s.dataset.zone='11521180',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-
-  <!-- Monetag Push Notifications (Service Worker) -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js', { scope: '/' })
-        .then(function(reg) {
-          console.log('[Monetag] SW registrado com sucesso:', reg.scope);
-        })
-        .catch(function(err) {
-          console.log('[Monetag] SW falhou:', err);
-        });
-    }
-  </script>
-
-  <!-- Z-Index Booster: garante que anúncios injetados dinamicamente fiquem acima do player-modal -->
-  <script>
-    (function() {
-      // IDs e classes dos nossos próprios elementos (não devem ser alterados)
-      var ownIds = ['player-modal','player-header-buttons','player-settings-overlay',
-        'player-settings-dropdown','player-feedback','player-tabs-bar','player-tabs-blur',
-        'player-controls-bar','player-controls-blur','expanded-cover-blur',
-        'youtube-search-overlay','youtube-search-bar-wrapper','youtube-search-btn-container',
-        'import-info-modal','playlist-picker-modal','expanded-video-wrapper',
-        'bottom-ad-banner','mobile-ad-banner','csv-file-input',
-        'audio-player','radio-audio-player','ad-banner-left','ad-banner-right'];
-      var ownClasses = ['ad-sidebar','ad-bottom','ad-mobile-bottom'];
-
-      function isOwnElement(node) {
-        if (node.id && ownIds.indexOf(node.id) !== -1) return true;
-        for (var i = 0; i < ownClasses.length; i++) {
-          if (node.classList && node.classList.contains(ownClasses[i])) return true;
-        }
-        if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.tagName === 'LINK'
-            || node.tagName === 'SVG' || node.tagName === 'AUDIO' || node.tagName === 'INPUT'
-            || node.tagName === 'HEADER') return true;
-        return false;
-      }
-
-      function boostZIndex(node) {
-        if (node.nodeType !== 1 || node.parentElement !== document.body) return;
-        if (isOwnElement(node)) return;
-        var style = window.getComputedStyle(node);
-        if (style.position === 'fixed' || style.position === 'absolute') {
-          node.style.setProperty('z-index', '10000', 'important');
-        }
-      }
-
-      // Observar novos elementos adicionados ao body
-      var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(m) {
-          m.addedNodes.forEach(boostZIndex);
-        });
-      });
-      observer.observe(document.body, { childList: true });
-    })();
-  </script>
 
   <!-- Input de arquivo CSV -->
   <input id="csv-file-input" type="file" accept=".csv" class="hidden" aria-label="Selecionar arquivo CSV">
