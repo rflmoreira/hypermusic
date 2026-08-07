@@ -5904,8 +5904,8 @@ const MUSIC_PLAYER = (() => {
         // Injeta Native Banner após o 3º vídeo apenas na primeira busca (não na paginação)
         if (!append && (idx === 2 || (videos.length < 3 && idx === videos.length - 1))) {
           videoHtml += `
-            <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; display: flex; justify-content: center; width: 100%;">
-              <div id="container-49b9fc663654c5ec16753931eb73072a"></div>
+            <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; width: 100%;">
+              <iframe src="ad-native.html" style="width: 100%; height: 320px; border: none; overflow: hidden;" scrolling="no"></iframe>
             </div>
           `;
         }
@@ -5925,23 +5925,8 @@ const MUSIC_PLAYER = (() => {
       const newItems = Array.from(allItems).slice(-videos.length);
       newItems.forEach(item => attachYouTubeSearchItemListeners(item));
     } else {
-      // Renomeia IDs antigos para não confundir o Adsterra
-      document.querySelectorAll('#container-49b9fc663654c5ec16753931eb73072a').forEach(el => {
-        el.id = 'container-49b9fc663654c5ec16753931eb73072a-inactive';
-      });
-
       // Substitui todo o conteúdo
       container.innerHTML = playlistsHtml + videosHtml;
-
-      // Injeta script do Native Banner da Adsterra
-      const oldAdScript = document.getElementById('adsterra-native-script-search');
-      if (oldAdScript) oldAdScript.remove();
-      const adScript = document.createElement('script');
-      adScript.id = 'adsterra-native-script-search';
-      adScript.async = true;
-      adScript.dataset.cfasync = 'false';
-      adScript.src = 'https://pl30727891.effectivecpmnetwork.com/49b9fc663654c5ec16753931eb73072a/invoke.js';
-      document.body.appendChild(adScript);
       // Adiciona event listeners para vídeos
       container.querySelectorAll('.manual-search-item').forEach(item => {
         attachYouTubeSearchItemListeners(item);
@@ -9085,8 +9070,8 @@ const MUSIC_PLAYER = (() => {
       // Injeta Native Banner da Adsterra após a 3ª música (index 2) ou no fim se a playlist for muito curta
       if (index === 2 || (tracks.length < 3 && index === tracks.length - 1)) {
         trackHtml += `
-          <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; display: flex; justify-content: center; width: 100%;">
-            <div id="container-49b9fc663654c5ec16753931eb73072a"></div>
+          <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; width: 100%;">
+            <iframe src="ad-native.html" style="width: 100%; height: 320px; border: none; overflow: hidden;" scrolling="no"></iframe>
           </div>
         `;
       }
@@ -9094,22 +9079,7 @@ const MUSIC_PLAYER = (() => {
       return trackHtml;
     }).join('');
 
-    // Renomeia IDs antigos para não confundir o Adsterra
-    document.querySelectorAll('#container-49b9fc663654c5ec16753931eb73072a').forEach(el => {
-      el.id = 'container-49b9fc663654c5ec16753931eb73072a-inactive';
-    });
-
     ui.tracksContainer.insertAdjacentHTML('beforeend', tracksHtml);
-
-    // Injeta script do Native Banner da Adsterra
-    const oldAdScript = document.getElementById('adsterra-native-script');
-    if (oldAdScript) oldAdScript.remove();
-    const adScript = document.createElement('script');
-    adScript.id = 'adsterra-native-script';
-    adScript.async = true;
-    adScript.dataset.cfasync = 'false';
-    adScript.src = 'https://pl30727891.effectivecpmnetwork.com/49b9fc663654c5ec16753931eb73072a/invoke.js';
-    document.body.appendChild(adScript);
 
     updatePlaylistEmptyState();
 
