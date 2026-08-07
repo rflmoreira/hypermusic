@@ -68,9 +68,48 @@
   <!-- ===== PLAYER HTML (inline) ===== -->
 
   <!-- ===== ANÚNCIOS (Banners Fixos) ===== -->
+  <style>
+    .ad-sidebar {
+      display: none;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 160px;
+      background: #0a0a0a;
+      z-index: 9999;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .ad-sidebar-left { left: 0; border-right-width: 1px; }
+    .ad-sidebar-right { right: 0; border-left-width: 1px; }
+    
+    .ad-bottom {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 90px;
+      background: #0a0a0a;
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    @media (min-width: 1280px) {
+      .ad-sidebar { display: flex; }
+    }
+    @media (min-width: 1024px) {
+      .ad-bottom { display: flex; }
+    }
+  </style>
+
   <!-- Anúncio Lateral Esquerdo -->
-  <aside class="hidden xl:flex fixed left-0 top-0 bottom-0 w-[160px] 2xl:w-[300px] flex-col justify-center items-center bg-[#0a0a0a] border-r border-white/5 z-[60]" aria-hidden="true">
-    <div id="ad-banner-left" class="flex items-center justify-center text-white/20 text-xs bg-white/5 rounded" style="width: 160px; height: 600px;">
+  <aside class="ad-sidebar ad-sidebar-left" aria-hidden="true">
+    <div id="ad-banner-left" style="width: 160px; height: 600px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.05); border-radius:8px;">
       <script>
         atOptions = {
           'key' : '0e0381daf7b7a590eb5f354911ae6938',
@@ -85,8 +124,8 @@
   </aside>
 
   <!-- Anúncio Lateral Direito -->
-  <aside class="hidden xl:flex fixed right-0 top-0 bottom-0 w-[160px] 2xl:w-[300px] flex-col justify-center items-center bg-[#0a0a0a] border-l border-white/5 z-[60]" aria-hidden="true">
-    <div id="ad-banner-right" class="flex items-center justify-center text-white/20 text-xs bg-white/5 rounded" style="width: 160px; height: 600px;">
+  <aside class="ad-sidebar ad-sidebar-right" aria-hidden="true">
+    <div id="ad-banner-right" style="width: 160px; height: 600px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.05); border-radius:8px;">
       <script>
         atOptions = {
           'key' : '0e0381daf7b7a590eb5f354911ae6938',
@@ -101,8 +140,8 @@
   </aside>
 
   <!-- Banner Inferior -->
-  <div id="bottom-ad-banner" class="hidden lg:flex fixed bottom-0 left-0 right-0 h-[90px] justify-center items-center bg-[#0a0a0a] border-t border-white/10 z-[60]" aria-hidden="true">
-    <div id="ad-banner-bottom" class="flex items-center justify-center text-white/20 text-xs bg-white/5 rounded" style="width: 728px; height: 90px;">
+  <div id="bottom-ad-banner" class="ad-bottom" aria-hidden="true">
+    <div id="ad-banner-bottom" style="width: 728px; height: 90px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.05); border-radius:8px;">
       <script>
         atOptions = {
           'key' : '001ffebf2aec3ab0c956474e5b34d7c9',
