@@ -11101,13 +11101,3 @@ window.HyperMusicPlayer = {
   /** @internal Referência ao módulo completo para uso avançado */
   _internal: MUSIC_PLAYER
 };
-
-// Listener global para auto-resize dos anúncios Adsterra
-window.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'adsterra-resize' && event.data.id && event.data.height) {
-    const iframe = document.getElementById(event.data.id);
-    if (iframe) {
-      iframe.style.height = event.data.height + 'px';
-    }
-  }
-});

@@ -50,22 +50,5 @@
 <body>
   <script async="async" data-cfasync="false" src="https://pl30727891.effectivecpmnetwork.com/49b9fc663654c5ec16753931eb73072a/invoke.js"></script>
   <div id="container-49b9fc663654c5ec16753931eb73072a"></div>
-  <script>
-    // Monitora o tamanho do conteúdo e envia a altura para o iframe pai
-    window.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const frameId = urlParams.get('id');
-      
-      if (!frameId) return;
-
-      const observer = new ResizeObserver(entries => {
-        for (let entry of entries) {
-          // Adiciona 20px de margem de segurança para evitar corte de fontes
-          window.parent.postMessage({ type: 'adsterra-resize', id: frameId, height: entry.target.offsetHeight + 20 }, '*');
-        }
-      });
-      observer.observe(document.body);
-    });
-  </script>
 </body>
 </html>
