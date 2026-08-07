@@ -5871,7 +5871,7 @@ const MUSIC_PLAYER = (() => {
         const thumb = video.thumbnail || `https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg`;
         const isFirst = !append && idx === 0 && (!playlists || playlists.length === 0);
 
-        return `
+      let videoHtml = `
           <div class="manual-search-item flex items-center gap-3 p-3 cursor-pointer transition-colors rounded-xl ${!isFirst ? 'mt-1' : ''}" 
                data-video-id="${video.videoId}" 
                data-title="${escapeHTML(video.title)}"
@@ -5900,6 +5900,16 @@ const MUSIC_PLAYER = (() => {
             </button>
           </div>
         `;
+
+        // Injeta Native Banner após o 3º vídeo apenas na primeira busca (não na paginação)
+        if (!append && (idx === 2 || (videos.length < 3 && idx === videos.length - 1))) {
+          videoHtml += `
+            <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; display: flex; justify-content: center; width: 100%;">
+              <div id="container-49b9fc663654c5ec16753931eb73072a"></div>
+            </div>
+          `;
+        }
+        return videoHtml;
       }).join('');
       
       if (!append && playlists && playlists.length > 0) {
@@ -5915,8 +5925,23 @@ const MUSIC_PLAYER = (() => {
       const newItems = Array.from(allItems).slice(-videos.length);
       newItems.forEach(item => attachYouTubeSearchItemListeners(item));
     } else {
+      // Renomeia IDs antigos para não confundir o Adsterra
+      document.querySelectorAll('#container-49b9fc663654c5ec16753931eb73072a').forEach(el => {
+        el.id = 'container-49b9fc663654c5ec16753931eb73072a-inactive';
+      });
+
       // Substitui todo o conteúdo
       container.innerHTML = playlistsHtml + videosHtml;
+
+      // Injeta script do Native Banner da Adsterra
+      const oldAdScript = document.getElementById('adsterra-native-script-search');
+      if (oldAdScript) oldAdScript.remove();
+      const adScript = document.createElement('script');
+      adScript.id = 'adsterra-native-script-search';
+      adScript.async = true;
+      adScript.dataset.cfasync = 'false';
+      adScript.src = 'https://pl30727891.effectivecpmnetwork.com/49b9fc663654c5ec16753931eb73072a/invoke.js';
+      document.body.appendChild(adScript);
       // Adiciona event listeners para vídeos
       container.querySelectorAll('.manual-search-item').forEach(item => {
         attachYouTubeSearchItemListeners(item);
@@ -9068,6 +9093,11 @@ const MUSIC_PLAYER = (() => {
 
       return trackHtml;
     }).join('');
+
+    // Renomeia IDs antigos para não confundir o Adsterra
+    document.querySelectorAll('#container-49b9fc663654c5ec16753931eb73072a').forEach(el => {
+      el.id = 'container-49b9fc663654c5ec16753931eb73072a-inactive';
+    });
 
     ui.tracksContainer.insertAdjacentHTML('beforeend', tracksHtml);
 
