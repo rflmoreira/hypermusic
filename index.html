@@ -98,12 +98,33 @@
       align-items: center;
       border-top: 1px solid rgba(255,255,255,0.1);
     }
+    
+    .ad-mobile-bottom {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(50px + env(safe-area-inset-bottom, 0px));
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: #0a0a0a;
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
 
     @media (min-width: 1280px) {
       .ad-sidebar { display: flex; }
     }
     @media (min-width: 1024px) {
       .ad-bottom { display: flex; }
+      .ad-mobile-bottom { display: none; }
+    }
+    @media (max-width: 1023px) {
+      #player-controls-bar {
+        bottom: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+      }
     }
   </style>
 
@@ -139,7 +160,7 @@
     </div>
   </aside>
 
-  <!-- Banner Inferior -->
+  <!-- Banner Inferior (Desktop) -->
   <div id="bottom-ad-banner" class="ad-bottom" aria-hidden="true">
     <div id="ad-banner-bottom" style="width: 728px; height: 90px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.05); border-radius:8px;">
       <script>
@@ -154,10 +175,41 @@
       <script src="https://www.highperformanceformat.com/001ffebf2aec3ab0c956474e5b34d7c9/invoke.js"></script>
     </div>
   </div>
+  
+  <!-- Banner Inferior (Mobile) -->
+  <div id="mobile-ad-banner" class="ad-mobile-bottom" aria-hidden="true">
+    <div id="ad-banner-mobile" style="width: 320px; height: 50px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.05); border-radius:8px;">
+      <script>
+        atOptions = {
+          'key' : '2a7c2e72f1d13029f309e74581b6a082',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+      <script src="https://www.highperformanceformat.com/2a7c2e72f1d13029f309e74581b6a082/invoke.js"></script>
+    </div>
+  </div>
 
-  <!-- ===== ANÚNCIOS AGRESSIVOS (Social Bar / Popunder) ===== -->
+  <!-- ===== ANÚNCIOS AGRESSIVOS (Monetag - In-Page Push / Multitag) ===== -->
   <!-- O script invisível roda em segundo plano. -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="267696" async data-cfasync="false"></script>
+  <script>(function(s){s.dataset.zone='11521166',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+  <script>(function(s){s.dataset.zone='11521180',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+  <!-- Monetag Push Notifications (Service Worker) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then(function(reg) {
+          console.log('[Monetag] SW registrado com sucesso:', reg.scope);
+        })
+        .catch(function(err) {
+          console.log('[Monetag] SW falhou:', err);
+        });
+    }
+  </script>
 
   <!-- Input de arquivo CSV -->
   <input id="csv-file-input" type="file" accept=".csv" class="hidden" aria-label="Selecionar arquivo CSV">
