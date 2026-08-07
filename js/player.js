@@ -5743,9 +5743,18 @@ const MUSIC_PLAYER = (() => {
       ui.youtubeSearchContent.scrollTop = 0;
     }
 
-    const html = playlists.map((playlist, idx) => 
-      renderYoutubePlaylistItemHtml(playlist, idx > 0 ? 'mt-1' : '')
-    ).join('');
+    const html = playlists.map((playlist, idx) => {
+      let itemHtml = renderYoutubePlaylistItemHtml(playlist, idx > 0 ? 'mt-1' : '');
+      // Injeta Native Banner após a 3ª playlist
+      if (idx === 2 || (playlists.length < 3 && idx === playlists.length - 1)) {
+        itemHtml += `
+          <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; width: 100%;">
+            <iframe src="ad-native.html" style="width: 100%; height: 320px; border: none; overflow: hidden;" scrolling="no"></iframe>
+          </div>
+        `;
+      }
+      return itemHtml;
+    }).join('');
 
     container.innerHTML = html;
 
@@ -5850,7 +5859,18 @@ const MUSIC_PLAYER = (() => {
             Playlists
           </h3>
           <div class="space-y-2">
-            ${playlists.map(playlist => renderYoutubePlaylistItemHtml(playlist)).join('')}
+            ${playlists.map((playlist, idx) => {
+              let itemHtml = renderYoutubePlaylistItemHtml(playlist);
+              // Injeta Native Banner após a 3ª playlist
+              if (idx === 2 || (playlists.length < 3 && idx === playlists.length - 1)) {
+                itemHtml += `
+                  <div class="adsterra-native-banner-wrapper" style="margin: 8px 0; width: 100%;">
+                    <iframe src="ad-native.html" style="width: 100%; height: 320px; border: none; overflow: hidden;" scrolling="no"></iframe>
+                  </div>
+                `;
+              }
+              return itemHtml;
+            }).join('')}
           </div>
         </div>
       `;
