@@ -977,13 +977,22 @@
   right: 0;
   height: 100px;
   z-index: 50;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   background: linear-gradient(to top, #000000 0%, #000000 10%, transparent 35%);
-  -webkit-mask-image: linear-gradient(to top, black 55%, transparent 100%);
-  mask-image: linear-gradient(to top, black 55%, transparent 100%);
   pointer-events: none;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#player-controls-blur::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 15px; /* Offset to ensure browser doesn't sample the blur */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  -webkit-mask-image: linear-gradient(to top, black 55%, transparent 100%);
+  mask-image: linear-gradient(to top, black 55%, transparent 100%);
 }
 
 /* Expanded Cover Blur - fundo blur atrás da capa expandida */
@@ -1646,12 +1655,21 @@ body.video-fullscreen-active #player-launcher {
   height: 280px;
   z-index: 30;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   background: linear-gradient(to bottom, #000000 0%, #000000 15%, transparent 45%);
   transform: translateZ(0);
+}
+
+#player-tabs-blur::after {
+  content: '';
+  position: absolute;
+  top: 20px; /* Offset to ensure browser samples the pure solid background */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
 }
 
 #player-tabs-bar .tabs-container {
