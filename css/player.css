@@ -1656,22 +1656,22 @@ body.video-fullscreen-active #player-launcher {
   height: 280px;
   z-index: 30;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 35px, rgba(0,0,0,0.95) 55px, rgba(0,0,0,0.8) 80px, rgba(0,0,0,0.5) 115px, rgba(0,0,0,0.2) 155px, rgba(0,0,0,0) 200px);
+  background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15px, rgba(0,0,0,0.95) 35px, rgba(0,0,0,0.8) 60px, rgba(0,0,0,0.5) 95px, rgba(0,0,0,0.2) 135px, rgba(0,0,0,0) 180px);
   transform: translateZ(0);
 }
 
 #player-tabs-blur::after {
   content: '';
   position: absolute;
-  top: 25px; /* Offset to ensure browser samples the pure solid background */
+  top: 10px; /* Safely inside the 15px solid region */
   left: 0;
   right: 0;
   bottom: 0;
   backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
   -webkit-backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
   background: rgba(0, 0, 0, 0.45);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.4) 85%, rgba(0,0,0,0) 100%);
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.4) 85%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.4) 80%, rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.4) 80%, rgba(0,0,0,0) 100%);
 }
 
 #player-tabs-bar .tabs-container {
