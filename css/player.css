@@ -977,7 +977,7 @@
   right: 0;
   height: 160px;
   z-index: 50;
-  background: linear-gradient(to top, #000000 0%, #000000 25px, transparent 70%);
+  background: linear-gradient(to top, #000000 0%, #000000 50px, transparent 70%);
   pointer-events: none;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
@@ -988,7 +988,7 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: 20px; /* Offset to ensure browser doesn't sample the blur */
+  bottom: 40px; /* Offset to ensure browser doesn't sample the blur */
   backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
   -webkit-backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
   background: rgba(0, 0, 0, 0.45);
@@ -1656,14 +1656,14 @@ body.video-fullscreen-active #player-launcher {
   height: 280px;
   z-index: 30;
   pointer-events: none;
-  background: linear-gradient(to bottom, #000000 0%, #000000 20px, transparent 30%);
+  background: linear-gradient(to bottom, #000000 0%, #000000 45px, transparent 30%);
   transform: translateZ(0);
 }
 
 #player-tabs-blur::after {
   content: '';
   position: absolute;
-  top: 15px; /* Offset to ensure browser samples the pure solid background */
+  top: 35px; /* Offset to ensure browser samples the pure solid background */
   left: 0;
   right: 0;
   bottom: 0;
