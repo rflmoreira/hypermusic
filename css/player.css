@@ -1656,14 +1656,14 @@ body.video-fullscreen-active #player-launcher {
   height: 280px;
   z-index: 30;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 15px, rgba(0,0,0,0.95) 35px, rgba(0,0,0,0.8) 60px, rgba(0,0,0,0.5) 95px, rgba(0,0,0,0.2) 135px, rgba(0,0,0,0) 180px);
+  background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 5px, rgba(0,0,0,0.95) 25px, rgba(0,0,0,0.8) 50px, rgba(0,0,0,0.5) 90px, rgba(0,0,0,0.2) 130px, rgba(0,0,0,0) 180px);
   transform: translateZ(0);
 }
 
 #player-tabs-blur::after {
   content: '';
   position: absolute;
-  top: 10px; /* Safely inside the 15px solid region */
+  top: 8px; /* Safely inside the solid region */
   left: 0;
   right: 0;
   bottom: 0;
