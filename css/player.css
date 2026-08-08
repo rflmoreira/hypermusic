@@ -977,9 +977,8 @@
   right: 0;
   height: 100px;
   z-index: 50;
-  backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
-  -webkit-backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
-  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   -webkit-mask-image: linear-gradient(to top, black 55%, transparent 100%);
   mask-image: linear-gradient(to top, black 55%, transparent 100%);
   pointer-events: none;
@@ -1648,8 +1647,8 @@ body.video-fullscreen-active #player-launcher {
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
-  backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
-  -webkit-backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transform: translateZ(0);
 }
 
