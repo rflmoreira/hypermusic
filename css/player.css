@@ -1656,7 +1656,7 @@ body.video-fullscreen-active #player-launcher {
   height: 280px;
   z-index: 30;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 5px, rgba(0,0,0,0.95) 25px, rgba(0,0,0,0.8) 50px, rgba(0,0,0,0.5) 90px, rgba(0,0,0,0.2) 130px, rgba(0,0,0,0) 180px);
+  background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 5px, rgba(0,0,0,0.95) 15px, rgba(0,0,0,0.8) 30px, rgba(0,0,0,0.5) 60px, rgba(0,0,0,0.2) 90px, rgba(0,0,0,0) 120px);
   transform: translateZ(0);
 }
 
