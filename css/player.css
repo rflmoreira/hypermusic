@@ -521,6 +521,13 @@
   pointer-events: none !important;
 }
 
+@media (min-width: 1280px) {
+  #player-header-buttons {
+    padding-left: 176px;
+    padding-right: 176px;
+  }
+}
+
 #player-header-buttons button,
 #player-header-buttons>div {
   pointer-events: auto;
@@ -2600,7 +2607,13 @@ body.video-fullscreen-active #player-launcher {
 }
 
 #youtube-search-btn-container {
-  bottom: calc(156px + env(safe-area-inset-bottom, 0px)) !important;
+  bottom: calc(176px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+@media (max-width: 1023px) {
+  #youtube-search-btn-container {
+    bottom: calc(140px + env(safe-area-inset-bottom, 0px)) !important;
+  }
 }
 
 @media (max-width: 480px) {
