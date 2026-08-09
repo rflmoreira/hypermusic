@@ -1,0 +1,2610 @@
+/* ========================================
+   HyperMusic Player - Estilos
+   ======================================== */
+
+/* Overlay blur padrão (duplicado do index para independência futura) */
+.overlay-blur {
+  backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
+  -webkit-backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* Playlist Cards */
+.playlist-card {
+  transition: all 0.3s ease;
+}
+
+.playlist-card:hover {
+  transform: translateY(-4px);
+}
+
+.playlist-card img {
+  transition: transform 0.3s ease;
+}
+
+/* Track Item */
+.track-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  column-gap: 12px;
+  border-radius: 0;
+  padding: 0.7rem 0.85rem;
+  width: 100%;
+  box-sizing: border-box;
+  --progress: 0%;
+  background: transparent;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  contain: layout style;
+}
+
+.track-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0.85rem;
+  right: 0.85rem;
+  height: 1px;
+  background-image: repeating-linear-gradient(to right, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 3px, transparent 3px, transparent 9px);
+}
+
+.track-item:last-child::after {
+  display: none;
+}
+
+.track-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(255, 122, 31, 0.25);
+  width: var(--progress);
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+}
+
+.track-item.active.playing {
+  cursor: pointer;
+}
+
+.track-item.seeking::before {
+  background: rgba(255, 122, 31, 0.4);
+  will-change: width;
+}
+
+.track-item.active.playing::before {
+  opacity: 1;
+}
+
+.track-item>* {
+  position: relative;
+  z-index: 1;
+}
+
+.track-item:hover {
+  background: transparent;
+}
+
+.track-item.active {
+  background: transparent;
+}
+
+.track-item.active:not(.playing) {
+  background: transparent;
+}
+
+.track-item.track-unavailable {
+  opacity: 0.4;
+}
+
+.track-item.track-unavailable .track-title {
+  text-decoration: line-through;
+}
+
+.track-item.active .track-title {
+  color: #ff7a1f;
+}
+
+/* Permite interação com botões de ação em faixas indisponíveis */
+.track-item.track-unavailable .track-remove-watch-later-btn,
+.track-item.track-unavailable .track-add-watch-later-btn {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* ========================================
+   Botão de Favoritos (Adicionar/Remover)
+   ======================================== */
+.track-add-watch-later-btn,
+.track-remove-watch-later-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+}
+
+.track-add-watch-later-btn:hover {
+  background: rgba(25, 25, 25, 0.45);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.track-add-watch-later-btn:active,
+.track-remove-watch-later-btn:active {
+  transform: scale(0.95);
+}
+
+/* Estado Ativo (Já nos Favoritos) */
+.track-add-watch-later-btn.is-favorite {
+  background: rgba(255, 122, 31, 0.15);
+  color: #ff7a1f;
+}
+
+.track-add-watch-later-btn.is-favorite:hover {
+  background: rgba(255, 122, 31, 0.25);
+  color: #ff8c3a;
+}
+
+/* Botão de Remover (Lixeira) */
+.track-remove-watch-later-btn {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.track-remove-watch-later-btn:hover {
+  transform: scale(1.1);
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.15), 0 0 2px rgba(239, 68, 68, 0.4) inset;
+}
+
+/* Sound Wave Overlay */
+.sound-wave-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.375rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.track-item.active .sound-wave-overlay {
+  opacity: 1;
+}
+
+/* Track Loading Overlay */
+.track-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 0.375rem;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.track-item.loading .track-loading-overlay {
+  display: flex;
+}
+
+/* Track Reload Overlay */
+.track-reload-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 0.375rem;
+  z-index: 10;
+}
+
+.track-item.loading .track-reload-overlay {
+  display: none;
+}
+
+.track-item.loading .sound-wave-overlay {
+  opacity: 0;
+}
+
+/* Sound Wave Bars */
+.sound-wave-bar {
+  width: 3px;
+  height: 8px;
+  background: #f97316;
+  border-radius: 2px;
+  transform-origin: bottom;
+  will-change: transform;
+}
+
+.track-item.active.playing .sound-wave-bar {
+  animation: soundWave 0.8s ease-in-out infinite;
+}
+
+.track-item.active.playing .sound-wave-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.track-item.active.playing .sound-wave-bar:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.track-item.active.playing .sound-wave-bar:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.track-item.active.playing .sound-wave-bar:nth-child(4) {
+  animation-delay: 0.45s;
+}
+
+/* Manual Search Item */
+.manual-search-item {
+  position: relative;
+  --progress: 0%;
+  cursor: pointer;
+  user-select: none;
+}
+
+.manual-search-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0.85rem;
+  right: 0.85rem;
+  height: 1px;
+  background-image: repeating-linear-gradient(to right, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 3px, transparent 3px, transparent 9px);
+}
+
+.manual-search-item:last-child::after {
+  display: none;
+}
+
+.manual-search-item.seeking {
+  cursor: ew-resize;
+}
+
+.manual-search-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(255, 122, 31, 0.12);
+  width: var(--progress);
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.manual-search-item.active.playing::before {
+  opacity: 1;
+}
+
+.manual-search-item>* {
+  position: relative;
+  z-index: 1;
+}
+
+.manual-search-item.active .search-item-title {
+  color: #ff7a1f;
+}
+
+.manual-search-item .sound-wave-overlay {
+  border-radius: 0.5rem;
+}
+
+.manual-search-item.active .sound-wave-overlay {
+  opacity: 1;
+}
+
+.manual-search-item.active.playing .sound-wave-bar {
+  animation: soundWave 0.8s ease-in-out infinite;
+}
+
+.manual-search-item.active.playing .sound-wave-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.manual-search-item.active.playing .sound-wave-bar:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.manual-search-item.active.playing .sound-wave-bar:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.manual-search-item.active.playing .sound-wave-bar:nth-child(4) {
+  animation-delay: 0.45s;
+}
+
+.manual-search-item .search-item-duration {
+  font-variant-numeric: tabular-nums;
+}
+
+/* YouTube Playlist Search Results */
+.youtube-playlist-item {
+  position: relative;
+}
+
+.youtube-playlist-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0.85rem;
+  right: 0.85rem;
+  height: 1px;
+  background-image: repeating-linear-gradient(to right, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 3px, transparent 3px, transparent 9px);
+}
+
+.youtube-playlist-item:last-child::after {
+  display: none;
+}
+
+/* Wave animation para ctrl-cover */
+.ctrl-wave-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.cover-container.playing .ctrl-wave-overlay {
+  opacity: 1;
+}
+
+.ctrl-wave-bar {
+  width: 4px;
+  height: 12px;
+  background: #f97316;
+  border-radius: 2px;
+  transform-origin: bottom;
+}
+
+.cover-container.playing .ctrl-wave-bar {
+  animation: soundWave 0.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.cover-container.playing .ctrl-wave-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.cover-container.playing .ctrl-wave-bar:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.cover-container.playing .ctrl-wave-bar:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.cover-container.playing .ctrl-wave-bar:nth-child(4) {
+  animation-delay: 0.45s;
+}
+
+/* Track Duration */
+.track-duration {
+  min-width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+
+
+/* Containers de conteúdo do player */
+#player-modal .player-scroll-surface,
+#tracks-container,
+#youtube-search-content,
+#radio-channels-container,
+#discover-container {
+  max-height: none;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  scroll-padding-bottom: max(var(--quick-actions-reserved-bottom, 0px), 5.5rem);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.01) 0%, black 145px, black 100%);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.01) 0%, black 145px, black 100%);
+  transform: translateZ(0);
+}
+
+.player-scroll-surface::after {
+  content: '';
+  display: block;
+  height: calc(180px + env(safe-area-inset-bottom, 0px));
+  width: 100%;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+#player-modal .player-scroll-surface {
+  position: absolute;
+  inset: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+#tracks-container {
+  padding-right: 4px;
+  background: transparent;
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+
+#youtube-search-content {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#youtube-search-content::-webkit-scrollbar {
+  display: none;
+}
+
+#tracks-container::before {
+  content: '';
+  display: block;
+  height: 220px;
+  width: 100%;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+#youtube-search-content::before,
+#radio-channels-container::before {
+  content: '';
+  display: block;
+  height: 220px;
+  width: 100%;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+#tracks-container .tracks-top-spacer {
+  pointer-events: none !important;
+}
+
+#tracks-container .track-item {
+  position: relative;
+  z-index: 25;
+  pointer-events: auto !important;
+}
+
+#playlist-empty-state {
+  pointer-events: none;
+}
+
+#playlist-empty-state.hidden {
+  display: none !important;
+}
+
+#playlist-empty-state button,
+#playlist-empty-state a,
+#playlist-empty-state input {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 25;
+}
+
+/* Header Buttons - permitir cliques passarem para o conteúdo abaixo */
+#player-header-buttons {
+  pointer-events: none !important;
+}
+
+#player-header-buttons button,
+#player-header-buttons>div {
+  pointer-events: auto;
+}
+
+/* ===== Liquid Glass — material reutilizável (mesma receita do .player-bar) =====
+   Aplica blur, refração, brilho especular e bordas SEM definir cor de fundo,
+   permitindo que botões coloridos preservem seu acento. Use a classe
+   .liquid-glass em qualquer elemento e adicione <span class="liquid-glass-edge">
+   como primeiro filho para o rim de refração. */
+.liquid-glass,
+.player-glass-btn {
+  position: relative;
+  backdrop-filter: blur(4px) brightness(1.5) saturate(300%) contrast(1.08);
+  -webkit-backdrop-filter: blur(4px) brightness(1.5) saturate(300%) contrast(1.08);
+  border: 1px solid transparent;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.28),
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.04);
+  isolation: isolate;
+  overflow: visible;
+}
+
+/* Variante neutra (vidro escuro) para botões sem cor própria */
+.player-glass-btn {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+/* Refração real via SVG displacement (Chromium apenas) — só o filtro,
+   preservando a cor de fundo própria de cada elemento. */
+@supports (backdrop-filter: url(#liquid-glass-refract)) and (background: paint(liquid-glass-probe)) {
+  .liquid-glass,
+  .player-glass-btn {
+    backdrop-filter: blur(4px) saturate(200%) brightness(1.3) url(#liquid-glass-refract);
+  }
+
+  .player-glass-btn {
+    background: rgba(20, 20, 28, 0.18);
+  }
+
+  @media (max-width: 768px) {
+    .liquid-glass,
+    .player-glass-btn {
+      backdrop-filter: blur(4px) saturate(200%) brightness(1.3) url(#liquid-glass-refract-soft);
+    }
+  }
+}
+
+/* Rim de refração (compatível com Safari/iOS) — mesma técnica do .player-bar,
+   com limiares de máscara reduzidos por serem botões menores/circulares. */
+.liquid-glass .liquid-glass-edge,
+.player-glass-btn .liquid-glass-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  backdrop-filter: blur(14px) saturate(280%) brightness(1.35) contrast(1.08);
+  -webkit-backdrop-filter: blur(14px) saturate(280%) brightness(1.35) contrast(1.08);
+  -webkit-mask:
+    linear-gradient(90deg, #fff 0, rgba(255, 255, 255, 0.9) 4px, transparent 13px, transparent calc(100% - 13px), rgba(255, 255, 255, 0.9) calc(100% - 4px), #fff 100%),
+    linear-gradient(180deg, #fff 0, rgba(255, 255, 255, 0.9) 4px, transparent 13px, transparent calc(100% - 13px), rgba(255, 255, 255, 0.9) calc(100% - 4px), #fff 100%);
+  mask:
+    linear-gradient(90deg, #fff 0, rgba(255, 255, 255, 0.9) 4px, transparent 13px, transparent calc(100% - 13px), rgba(255, 255, 255, 0.9) calc(100% - 4px), #fff 100%),
+    linear-gradient(180deg, #fff 0, rgba(255, 255, 255, 0.9) 4px, transparent 13px, transparent calc(100% - 13px), rgba(255, 255, 255, 0.9) calc(100% - 4px), #fff 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Aberração cromática (fringe quente no topo, frio na base) — idêntico ao .player-bar */
+.liquid-glass::before,
+.player-glass-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--liquid-glass-fringe-width, 1px);
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, var(--liquid-glass-fringe-lateral, 0.25)) 15%, rgba(255, 255, 255, var(--liquid-glass-fringe-lateral, 0.25)) 85%, transparent 100%),
+    linear-gradient(180deg, rgba(255, 200, 180, var(--liquid-glass-fringe-chroma, 0.12)) 0%, transparent 40%, transparent 60%, rgba(180, 200, 255, var(--liquid-glass-fringe-chroma, 0.12)) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Sheen diagonal (superfície glossy do vidro) — idêntico ao .player-bar */
+.liquid-glass::after,
+.player-glass-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      100% 60% at 50% 0%,
+      rgba(255, 255, 255, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      100% 40% at 50% 100%,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 55%
+    ),
+    radial-gradient(12% 60% at 5% 50%, rgba(255, 255, 255, 0.10) 0%, transparent 100%),
+    radial-gradient(12% 60% at 95% 50%, rgba(255, 255, 255, 0.10) 0%, transparent 100%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Conteúdo (ícone/texto) acima das camadas de vidro */
+.liquid-glass > i,
+.liquid-glass > span:not(.liquid-glass-edge),
+.player-glass-btn > i,
+.player-glass-btn > span:not(.liquid-glass-edge) {
+  position: relative;
+  z-index: 2;
+}
+
+/* Player Modal e Screens */
+#player-modal > .player-screen {
+  position: relative;
+  z-index: 1;
+}
+
+#player-modal > header {
+  z-index: 31;
+}
+
+#player-screen-playlist {
+  overflow: hidden !important;
+  position: relative;
+}
+
+#player-modal > .player-screen {
+  padding-top: 0;
+}
+
+/* Animação de transição lateral para as telas do player */
+.player-screen {
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.35s ease;
+}
+
+.player-screen.slide-out-left {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.player-screen.slide-out-right {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.player-screen.slide-in-left {
+  animation: slide-from-left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.player-screen.slide-in-right {
+  animation: slide-from-right 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes slide-from-left {
+  from {
+    transform: translateX(-60px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    transform: translateX(60px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
+/* Player Bar - Estilos compartilhados (Liquid Glass) */
+.player-bar {
+  position: fixed;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  /* Mesma receita de vidro do #top-bar (blur idêntico no Safari iOS),
+     com tinta mais leve para não escurecer a cápsula e saturação maior
+     para cores mais vivas através do vidro */
+  background: rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(4px) brightness(1.5) saturate(300%) contrast(1.08);
+  -webkit-backdrop-filter: blur(4px) brightness(1.5) saturate(300%) contrast(1.08);
+  border: 1px solid transparent;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.28),
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.04);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  isolation: isolate;
+}
+
+/* Liquid Glass — refração real via SVG displacement (Chromium apenas).
+   O Safari parseia backdrop-filter: url() (passa no @supports) mas não
+   renderiza — a condição paint() (CSS Painting API, exclusiva Chromium)
+   garante que o Safari nunca entre neste bloco e mantenha o blur base.
+   No WebKit -webkit-backdrop-filter é alias de backdrop-filter, então
+   não se pode depender da ordem das declarações. */
+@supports (backdrop-filter: url(#liquid-glass-refract)) and (background: paint(liquid-glass-probe)) {
+  .player-bar {
+    background: rgba(20, 20, 28, 0.18);
+    backdrop-filter: blur(4px) saturate(200%) brightness(1.3) url(#liquid-glass-refract);
+  }
+
+  /* Em telas estreitas a barra é menor, mas o scale do feDisplacementMap é
+     absoluto (px) — a variante -soft (scale 30) mantém a intensidade visual
+     proporcional à do desktop. */
+  @media (max-width: 768px) {
+    .player-bar {
+      backdrop-filter: blur(4px) saturate(200%) brightness(1.3) url(#liquid-glass-refract-soft);
+    }
+  }
+}
+
+/* Liquid Glass — rim de refração (compatível com Safari/iOS).
+   O Safari não suporta backdrop-filter: url(#svg) nem feDisplacementMap
+   em elementos HTML (bug antigo do WebKit), então a refração real do
+   backdrop é impossível. Aproximação: faixa da borda com blur/brilho
+   intensificados que desvanece suavemente para o centro via gradient
+   masks (união horizontal + vertical) — replica o perfil óptico contínuo
+   de um bezel convexo, onde a luz dobra mais nas extremidades.
+   Camada única composta na GPU, sem repaints. */
+.player-bar .liquid-glass-edge,
+#cover-mode-toggle .liquid-glass-edge,
+#youtube-search-trigger .liquid-glass-edge,
+#youtube-search-bar .liquid-glass-edge,
+#youtube-search-cancel .liquid-glass-edge,
+#settings-import-csv-btn .liquid-glass-edge,
+#settings-import-info-btn .liquid-glass-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  backdrop-filter: blur(14px) saturate(280%) brightness(1.35) contrast(1.08);
+  -webkit-backdrop-filter: blur(14px) saturate(280%) brightness(1.35) contrast(1.08);
+  -webkit-mask:
+    linear-gradient(90deg, #fff 0, rgba(255, 255, 255, 0.9) 8px, transparent 34px, transparent calc(100% - 34px), rgba(255, 255, 255, 0.9) calc(100% - 8px), #fff 100%),
+    linear-gradient(180deg, #fff 0, rgba(255, 255, 255, 0.9) 5px, transparent 20px, transparent calc(100% - 20px), rgba(255, 255, 255, 0.9) calc(100% - 5px), #fff 100%);
+  mask:
+    linear-gradient(90deg, #fff 0, rgba(255, 255, 255, 0.9) 8px, transparent 34px, transparent calc(100% - 34px), rgba(255, 255, 255, 0.9) calc(100% - 8px), #fff 100%),
+    linear-gradient(180deg, #fff 0, rgba(255, 255, 255, 0.9) 5px, transparent 20px, transparent calc(100% - 20px), rgba(255, 255, 255, 0.9) calc(100% - 5px), #fff 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Liquid Glass — aberração cromática (fringe quente no topo, frio na base) */
+.player-bar::before,
+#cover-mode-toggle::before,
+#youtube-search-trigger::before,
+#youtube-search-bar::before,
+#youtube-search-cancel::before,
+#settings-import-csv-btn::before,
+#settings-import-info-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--liquid-glass-fringe-width, 1px);
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, var(--liquid-glass-fringe-lateral, 0.25)) 15%, rgba(255, 255, 255, var(--liquid-glass-fringe-lateral, 0.25)) 85%, transparent 100%),
+    linear-gradient(180deg, rgba(255, 200, 180, var(--liquid-glass-fringe-chroma, 0.12)) 0%, transparent 40%, transparent 60%, rgba(180, 200, 255, var(--liquid-glass-fringe-chroma, 0.12)) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Liquid Glass — sheen diagonal (superfície glossy do vidro) */
+.player-bar::after,
+#cover-mode-toggle::after,
+#youtube-search-trigger::after,
+#youtube-search-bar::after,
+#youtube-search-cancel::after,
+#settings-import-csv-btn::after,
+#settings-import-info-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      100% 60% at 50% 0%,
+      rgba(255, 255, 255, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      100% 40% at 50% 100%,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 55%
+    ),
+    radial-gradient(12% 60% at 5% 50%, rgba(255, 255, 255, 0.10) 0%, transparent 100%),
+    radial-gradient(12% 60% at 95% 50%, rgba(255, 255, 255, 0.10) 0%, transparent 100%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.player-bar .controls-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  z-index: 2;
+}
+
+.player-bar .controls-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.player-bar .controls-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  transition: opacity 0.2s ease, width 0.2s ease, margin 0.2s ease, padding 0.2s ease;
+  overflow: hidden;
+}
+
+.player-bar button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+  width: 28px;
+  height: 28px;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 15px;
+}
+
+.player-bar button:hover {
+  transform: scale(1.1);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.player-bar button:active {
+  transform: scale(0.95);
+}
+
+.player-bar .play-btn {
+  width: 32px;
+  height: 32px;
+  color: white;
+  font-size: 20px;
+}
+
+.player-bar .prev-btn,
+.player-bar .next-btn {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+}
+
+.player-bar .cover-container {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.player-bar .cover-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+}
+
+.player-bar .track-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-bar .track-artist {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-bar .info-container {
+  min-width: 0;
+  flex: 0 1 auto;
+  max-width: 180px;
+}
+
+.player-bar .volume-control {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.player-bar .volume-control button {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 16px;
+  padding: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+
+/* Player Controls Bar */
+#player-controls-bar {
+  bottom: 96px;
+  left: 20px;
+  right: 20px;
+  z-index: 54;
+  pointer-events: none !important;
+  overflow: visible;
+}
+
+/* Player Controls Blur - blur dissolvido abaixo da bar */
+#player-controls-blur {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  z-index: 50;
+  backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
+  -webkit-backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
+  background: rgba(0, 0, 0, 0.45);
+  -webkit-mask-image: linear-gradient(to top, black 55%, transparent 100%);
+  mask-image: linear-gradient(to top, black 55%, transparent 100%);
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Expanded Cover Blur - fundo blur atrás da capa expandida */
+#expanded-cover-blur {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 53;
+  backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
+  -webkit-backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+#player-controls-bar .controls-inner {
+  pointer-events: auto;
+}
+
+/* ====== Letras sincronizadas (entre o alternador e a capa) ======
+   Ocupa apenas o espaço vazio existente acima da capa. Enquanto não houver
+   letra disponível fica colapsado (altura 0), sem alterar o layout atual. */
+#player-controls-bar .expanded-lyrics {
+  /* Fora do fluxo por padrão: não é item flex, então não adiciona gap nem
+     desloca o alternador/capa enquanto não houver letra disponível. */
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  max-width: min(calc(100vh - 200px), 380px);
+  margin: 0 auto;
+  padding: 0 12px;
+  text-align: center;
+  /* Interativo: a lista de letras rola verticalmente para escolher o ponto
+     exato de sincronização. */
+  pointer-events: auto;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Lista rolável das letras. Rolar (ou tocar numa linha) define o ponto de
+   sincronia; a partir daí a reprodução segue sincronizada normalmente. */
+#player-controls-bar .lyrics-scroll {
+  display: none;
+  width: 100%;
+  /* Altura responsiva (≈2–3 linhas), adaptável à viewport. */
+  height: clamp(44px, 12vh, 104px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Espaço para centralizar a primeira e a última linha (responsivo). */
+  padding-block: clamp(12px, 3vh, 32px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
+}
+
+#player-controls-bar .lyrics-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+#player-controls-bar .expanded-cover-wrapper.has-lyrics .lyrics-scroll {
+  display: block;
+}
+
+/* Modo de ajuste: cursor de agarrar (desktop). */
+#player-controls-bar .expanded-cover-wrapper.lyrics-adjusting .lyrics-scroll {
+  cursor: grabbing;
+}
+
+/* Guia central discreto durante o ajuste, indicando a linha escolhida. */
+#player-controls-bar .expanded-cover-wrapper.lyrics-adjusting .expanded-lyrics::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  right: 8px;
+  height: 30px;
+  transform: translateY(-50%);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Indicador do ajuste de sincronia (ex.: "+1,5s"). */
+#player-controls-bar .lyrics-sync-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%);
+  margin-bottom: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+#player-controls-bar .expanded-lyrics .lyrics-sync-indicator.visible {
+  opacity: 1;
+}
+
+/* Aparece com a letra sincronizada (has-lyrics) ou com o aviso de indisponível
+   (no-lyrics). Em ambos os casos ocupa o espaço reservado às letras. */
+#player-controls-bar .expanded-cover-wrapper.has-lyrics .expanded-lyrics,
+#player-controls-bar .expanded-cover-wrapper.no-lyrics .expanded-lyrics,
+#player-controls-bar .expanded-cover-wrapper.loading-lyrics .expanded-lyrics {
+  display: flex;
+  animation: lyrics-area-in 0.4s ease;
+}
+
+@keyframes lyrics-area-in {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Aviso "Letras não disponíveis": oculto por padrão, visível só no estado
+   no-lyrics. Nesse estado as linhas de letra ficam escondidas. */
+#player-controls-bar .expanded-lyrics .lyrics-empty {
+  display: none;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.22);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+}
+
+#player-controls-bar .expanded-cover-wrapper.no-lyrics .expanded-lyrics .lyrics-line {
+  display: none;
+}
+
+#player-controls-bar .expanded-cover-wrapper.no-lyrics .expanded-lyrics .lyrics-empty {
+  display: block;
+}
+
+/* Estado de carregamento: exibe "..." enquanto busca a letra. */
+#player-controls-bar .expanded-lyrics .lyrics-loading {
+  display: none;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+}
+
+#player-controls-bar .expanded-cover-wrapper.loading-lyrics .expanded-lyrics .lyrics-line {
+  display: none;
+}
+
+#player-controls-bar .expanded-cover-wrapper.loading-lyrics .expanded-lyrics .lyrics-loading {
+  display: block;
+}
+
+#player-controls-bar .lyrics-scroll .lyrics-line {
+  margin: 0;
+  padding: 5px 2px;
+  width: 100%;
+  line-height: 1.3;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.34);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  /* Sem transição de layout (font-size fixo) para o scroll não "pular". */
+  transition: color 0.35s ease, opacity 0.35s ease, transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+}
+
+/* Linha atual (sincronizada) ou candidata (durante o ajuste): destacada. */
+#player-controls-bar .lyrics-scroll .lyrics-line.is-current,
+#player-controls-bar .lyrics-scroll .lyrics-line.is-candidate {
+  color: rgba(255, 255, 255, 0.98);
+  font-weight: 700;
+  transform: scale(1.04);
+}
+
+/* ====== Player Controls Bar — Expanded Cover ====== */
+
+/* Capa flutuante acima da barra.
+   Layout 100% flexível e adaptável à altura da viewport: o wrapper é ancorado
+   pela base (24px acima do player inferior) e sua altura (--ec-avail) é o
+   espaço livre até o topo seguro da tela, calculado dinamicamente por JS
+   (com fallback em dvh). Nada de alturas fixas: o alternador fica no topo, as
+   letras logo abaixo e a capa ocupa o restante, encolhendo proporcionalmente
+   para caber sem cortes. O player inferior permanece fixo e visível. */
+#player-controls-bar .expanded-cover-wrapper {
+  position: absolute;
+  bottom: calc(100% + 24px);
+  left: 0;
+  right: 0;
+  height: var(--ec-avail, calc(100dvh - 260px));
+  max-height: calc(100dvh - 128px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* space-between: alternador no topo, capa na base e as letras distribuídas
+     no meio (no espaço vazio entre eles). */
+  justify-content: space-between;
+  gap: clamp(6px, 1.6vh, 14px);
+  padding: 0 clamp(10px, 4vw, 16px);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.35s ease;
+  transform: scale(0.9);
+  cursor: pointer;
+}
+
+/* Barra superior (alternador + compartilhar): tamanho natural, fixa no topo. */
+#player-controls-bar .expanded-cover-topbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+/* Botão Compartilhar ao lado do alternador. Apenas forma/tamanho aqui; o
+   feedback visual (cor, transição, easing e estados) vem das mesmas classes
+   Tailwind do #player-settings-btn (text-white/70 hover:text-white
+   transition-all duration-300), garantindo animação idêntica. */
+#player-controls-bar .cover-share-btn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  font-size: 17px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Área de letras: tamanho natural entre o alternador e a capa; pode encolher. */
+#player-controls-bar .expanded-lyrics {
+  flex: 0 1 auto;
+}
+
+/* Palco (referência de tamanho para capa + vídeo): ocupa o espaço restante e
+   encolhe conforme necessário (min-height:0 permite o flex-shrink real). */
+#player-controls-bar .expanded-cover-stage {
+  position: relative;
+  width: 100%;
+  /* Não cresce (mantém a capa na base via space-between), mas encolhe quando
+     falta espaço, permitindo a capa reduzir sem cortar nada. */
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+/* A capa se ajusta ao espaço disponível preservando a proporção 1:1, com teto
+   para não crescer demais em telas grandes, e sem nunca ultrapassar a
+   viewport (limitada pela altura do palco e pela largura). */
+#player-controls-bar .expanded-cover-wrapper #ctrl-expanded-cover {
+  /* Largura e altura automáticas + aspect-ratio 1:1 fazem a capa resolver
+     o MAIOR QUADRADO que cabe dentro do palco, limitado pela menor dimensão
+     (altura ou largura) e pelo teto de 420px. Nunca vira retângulo. */
+  width: auto;
+  height: auto;
+  max-width: min(92%, 360px);
+  max-height: min(92%, 360px);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.8), 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 20px rgba(255, 255, 255, 0.04), 0 0 40px rgba(255, 255, 255, 0.02);
+  margin: 0 auto;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Player de vídeo (clipe oficial) — NÍVEL SUPERIOR (fora do #player-controls-bar).
+   Fica com position:fixed e é posicionado por JS (left/top/width/height inline)
+   para sobrepor a área da capa. Sem ancestrais com backdrop-filter/transform,
+   o que elimina o crash de rotação do iframe no iOS. */
+#expanded-video-wrapper {
+  position: fixed;
+  z-index: 55; /* acima do #player-controls-bar (54), abaixo dos modais (60) */
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: scale(0.96);
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.35s ease;
+}
+
+/* Modo Vídeo ativo: exibe o clipe. No estado assentado NÃO há transform
+   (transform: none), evitando qualquer camada de composição sobre o iframe. */
+#expanded-video-wrapper.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+#expanded-video-wrapper #yt-video-host,
+#expanded-video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Overlay de controles personalizados sobre o vídeo.
+   Sempre captura os eventos de ponteiro (bloqueando os controles nativos do
+   YouTube), mas fica visualmente oculto até haver interação. */
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 122, 31, 0.28);
+  opacity: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: opacity 0.4s ease;
+}
+
+.video-overlay.visible {
+  opacity: 1;
+}
+
+.video-fullscreen-btn {
+  width: 62px;
+  height: 62px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 25px;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.video-overlay.visible .video-fullscreen-btn {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.video-overlay.visible .video-fullscreen-btn:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.video-overlay.visible .video-fullscreen-btn:active {
+  transform: scale(1);
+}
+
+/* Tela cheia (nativa) do player de vídeo. !important para vencer os estilos
+   inline de posição definidos por JS no modo Vídeo normal. */
+#expanded-video-wrapper:fullscreen,
+#expanded-video-wrapper:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  aspect-ratio: auto !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  transform: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: #000;
+}
+
+#expanded-video-wrapper:fullscreen .video-fullscreen-btn,
+#expanded-video-wrapper:-webkit-full-screen .video-fullscreen-btn {
+  width: 74px;
+  height: 74px;
+  font-size: 30px;
+}
+
+/* Tela cheia via CSS (fallback para iPhone Safari e navegadores sem element
+   fullscreen). Cobre o viewport com position:fixed sem recarregar o iframe. */
+#expanded-video-wrapper.css-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  width: 100dvw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  aspect-ratio: auto !important;
+  margin: 0 !important;
+  transform: none !important;
+  border-radius: 0 !important;
+  background: #000 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 2147483647 !important;
+}
+
+#expanded-video-wrapper.css-fullscreen .video-fullscreen-btn {
+  width: 74px;
+  height: 74px;
+  font-size: 30px;
+}
+
+/* Em tela cheia, oculta toda a interface fora da experiência de reprodução */
+body.video-fullscreen-active #player-launcher {
+  display: none !important;
+}
+
+/* Modo Vídeo ativo: esconde a capa (o clipe é exibido pelo #expanded-video-wrapper
+   de nível superior, controlado via classe .is-visible). */
+#player-controls-bar .expanded-cover-wrapper.mode-video #ctrl-expanded-cover {
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+}
+
+#player-controls-bar .expanded-cover-wrapper.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* Alternador segmentado Capa/Vídeo */
+.cover-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  pointer-events: auto;
+  transition: none;
+}
+
+#player-controls-bar .cover-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 15px;
+  cursor: pointer;
+  transition: none;
+  transform: none;
+}
+
+#player-controls-bar .cover-mode-btn:hover {
+  transform: none;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+#player-controls-bar .cover-mode-btn:active {
+  transform: none;
+}
+
+#player-controls-bar .cover-mode-btn.active {
+  background: rgba(255, 255, 255, 0.95);
+  color: #141414;
+}
+
+/* Vídeo indisponível para a faixa: apagado e sem interação */
+.cover-mode-btn:disabled {
+  opacity: 0.32;
+  cursor: default;
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  #player-controls-bar .expanded-cover-wrapper #ctrl-expanded-cover,
+  #player-controls-bar .expanded-video-wrapper {
+    border-radius: 12px;
+  }
+}
+
+/* YouTube Search Bar */
+#youtube-search-bar {
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+#youtube-search-bar-wrapper.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#youtube-search-overlay.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#youtube-search-btn-container {
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+#youtube-search-btn-container.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#youtube-search-btn-container.hidden-for-search {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+#youtube-search-bar #manual-search-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#manual-search-input:-webkit-autofill,
+#manual-search-input:-webkit-autofill:hover,
+#manual-search-input:-webkit-autofill:focus,
+#manual-search-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+  -webkit-text-fill-color: white !important;
+  background-color: transparent !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Player Feedback */
+#player-feedback {
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 52;
+  padding: 12px 16px;
+  overflow: visible;
+  transform: translateY(-10px);
+  border-radius: 16px;
+  pointer-events: none !important;
+}
+
+#player-feedback.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+#player-feedback>div {
+  pointer-events: auto;
+}
+
+#player-feedback-cover {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+#player-feedback-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 10px;
+}
+
+#player-feedback-icon.success {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+#player-feedback-icon.error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+#player-feedback-icon.info {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+#player-feedback-icon.warning {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+#player-feedback-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+#player-feedback-text {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.player-feedback-badge {
+  flex-shrink: 0;
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+/* Import Info Modal */
+#import-info-modal.opacity-100 {
+  opacity: 1;
+  visibility: visible;
+}
+
+#import-info-modal .scale-95 {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Player Tabs Bar */
+#player-tabs-bar {
+  top: 145px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 51;
+  padding: 5px 6px;
+  min-width: 360px;
+  pointer-events: none !important;
+}
+
+/* Player Tabs Blur - blur dissolvido do header até abaixo do tabs bar */
+#player-tabs-blur {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 280px;
+  z-index: 30;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 65%, transparent 100%);
+  backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
+  -webkit-backdrop-filter: blur(4px) brightness(1.5) saturate(220%) contrast(1.08);
+  transform: translateZ(0);
+}
+
+#player-tabs-bar .tabs-container {
+  display: flex;
+  pointer-events: auto;
+  align-items: center;
+  gap: 4px;
+}
+
+#player-tabs-bar .player-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 32px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: none;
+  white-space: nowrap;
+  overflow: visible;
+  flex: 1 1 0;
+  min-width: 0;
+  height: auto;
+  font-size: inherit;
+}
+
+#player-tabs-bar .player-tab i {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+#player-tabs-bar .player-tab span {
+  font-size: 0.62rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+#player-tabs-bar .player-tab:hover {
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.04);
+  transform: none;
+}
+
+#player-tabs-bar .player-tab:active {
+  transform: none;
+}
+
+#player-tabs-bar .player-tab.active {
+  background: rgba(255, 122, 31, 0.15);
+  color: #ff7a1f;
+}
+
+/* Mini Player Bar */
+#mini-player-bar {
+  bottom: 100px;
+  left: 1rem;
+  right: 1rem;
+  max-width: 56rem;
+  margin: 0 auto;
+  z-index: 31;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  background: rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(4px) brightness(1.28) saturate(280%) contrast(1.08);
+  -webkit-backdrop-filter: blur(4px) brightness(1.28) saturate(280%) contrast(1.08);
+}
+
+@supports (backdrop-filter: url(#liquid-glass-refract)) and (background: paint(liquid-glass-probe)) {
+  #mini-player-bar {
+    background: rgba(12, 12, 18, 0.30);
+    backdrop-filter: blur(4px) saturate(190%) brightness(1.12) url(#liquid-glass-refract);
+  }
+
+  @media (max-width: 768px) {
+    #mini-player-bar {
+      backdrop-filter: blur(4px) saturate(190%) brightness(1.12) url(#liquid-glass-refract-soft);
+    }
+  }
+}
+
+#mini-player-bar.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Player Modal */
+#player-modal {
+  padding: 0;
+  overflow: hidden;
+  overflow-x: hidden;
+  height: 100dvh;
+  max-height: -webkit-fill-available;
+  background: #0a0a0a;
+}
+
+#player-modal #player-screen-playlist {
+  overflow: visible !important;
+}
+
+@supports (height: 100dvh) {
+  #player-modal {
+    height: 100dvh;
+  }
+}
+
+
+/* Responsividade Mobile */
+@media (max-width: 480px) {
+  #player-modal > .player-screen {
+    padding-top: 0;
+  }
+
+
+
+
+
+  #player-tabs-bar {
+    top: 140px;
+    padding: 5px 6px;
+    min-width: unset;
+    width: calc(100% - 64px);
+  }
+
+
+
+  #player-tabs-bar .tabs-container {
+    gap: 3px;
+  }
+
+  #player-tabs-bar .player-tab {
+    padding: 8px 14px;
+    gap: 4px;
+  }
+
+  #player-tabs-bar .player-tab i {
+    font-size: 0.85rem;
+  }
+
+  #player-tabs-bar .player-tab span {
+    font-size: 0.58rem;
+  }
+
+  #player-modal header {
+    padding: 0.75rem 1rem;
+  }
+
+
+  .track-item {
+    grid-template-columns: 40px minmax(0, 1fr) 32px 32px 40px;
+    column-gap: 4px;
+    padding: 0.5rem;
+  }
+
+  .track-item .flex-shrink-0 {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .track-item .track-duration {
+    font-size: 0.7rem;
+    width: auto;
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .track-item .track-add-watch-later-btn,
+  .track-item .track-remove-watch-later-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  #mini-player-bar {
+    bottom: 90px;
+    padding: 10px 16px;
+  }
+}
+
+/* Responsividade Desktop */
+@media (min-width: 769px) {
+
+  #player-modal > header,
+  #player-modal > #player-screen-discover,
+  #player-modal > #player-screen-playlist,
+  #player-modal > #player-screen-youtube,
+  #player-modal > #player-screen-radio {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
+
+  #player-modal #tracks-container {
+    padding-bottom: 0 !important;
+  }
+
+  #player-controls-bar,
+  #player-feedback {
+    max-width: 800px;
+    width: calc(100% - 24px);
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+  }
+
+  #player-feedback.visible {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  #mini-player-bar {
+    left: 50%;
+    right: auto;
+    width: calc(100% - 2rem);
+    max-width: 56rem;
+    transform: translateX(-50%) translateY(20px);
+  }
+
+  #mini-player-bar.visible {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ====== Discover Banner Carousel ====== */
+.discover-carousel-wrapper {
+  position: relative;
+  padding: 220px 16px 0;
+  transition: opacity 0.15s ease, transform 0.15s ease, filter 0.15s ease;
+  transform-origin: center top;
+}
+
+.discover-carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+  touch-action: pan-y pinch-zoom;
+}
+
+.discover-carousel-track {
+  display: flex;
+  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.discover-carousel-track.dragging {
+  transition: none;
+}
+
+.discover-carousel-slide {
+  flex: 0 0 80%;
+  margin-right: 10px;
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 2.2 / 1;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.discover-carousel-slide:first-child {
+  margin-left: 0;
+}
+
+.discover-carousel-slide:not(.active) {
+  opacity: 0.5;
+  transform: scale(0.92);
+}
+
+.discover-carousel-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.discover-carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.discover-carousel-slide .carousel-slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.15) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.discover-carousel-slide .carousel-slide-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.discover-carousel-slide .carousel-slide-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.discover-carousel-slide .carousel-slide-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.2;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.discover-carousel-slide .carousel-slide-subtitle {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 2px 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.discover-carousel-slide .carousel-slide-btn {
+  flex-shrink: 0;
+  padding: 6px 14px 6px 11px;
+  border-radius: 9999px;
+  border: none;
+  background: rgba(255, 122, 31, 0.9);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(255, 122, 31, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.discover-carousel-slide .carousel-slide-btn:hover {
+  background: rgba(255, 122, 31, 1);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 122, 31, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.discover-carousel-slide .carousel-slide-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(255, 122, 31, 0.3);
+}
+
+/* Dots */
+.discover-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0 2px;
+}
+
+.discover-carousel-dots .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  transition: background 0.3s ease, width 0.3s ease, border-radius 0.3s ease, height 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.discover-carousel-dots .dot.active {
+  width: 24px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 122, 31, 0.25);
+}
+
+.discover-carousel-dots .dot.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: 3px;
+  background: rgba(255, 122, 31, 1);
+  /* scaleX em vez de width: animar width invalida o layout do documento a cada
+     frame, e o carrossel reinicia essa animação a cada 5s indefinidamente —
+     inclusive com o week sheet aberto sobre o player, onde o custo se somava à
+     reamostragem do Liquid Glass. Medido: 102 layouts por rolagem de 3s contra
+     9 depois da troca. Mesmo resultado visual (barra preenchendo da esquerda). */
+  transform-origin: left center;
+  animation: dot-progress 5s linear forwards;
+}
+
+/* (Week-sheet optimization rules removed for standalone) */
+
+@keyframes dot-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Desktop */
+@media (min-width: 640px) {
+  .discover-carousel-slide {
+    flex: 0 0 65%;
+    margin-right: 14px;
+  }
+
+  .discover-carousel-slide:first-child {
+    margin-left: 0;
+  }
+
+  .discover-carousel-slide .carousel-slide-title {
+    font-size: 1.15rem;
+  }
+}
+
+/* Discover & Radio container content items */
+#discover-container>div,
+#radio-channels-container>div {
+  position: relative;
+  z-index: 25;
+  pointer-events: auto !important;
+}
+
+#discover-top-spacer {
+  pointer-events: none !important;
+}
+
+/* Featured Playlists */
+.featured-playlist-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.featured-playlist-card:hover {
+  border-color: rgba(255, 122, 31, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Capas das playlists: proporção fixa 1:1 (quadrada), sem "queixo" na base */
+.special-playlist-card > .aspect-square,
+.featured-playlist-card > .aspect-square,
+.my-playlist-card > .aspect-square,
+.radio-channel-card > .aspect-square {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.special-playlist-card > .aspect-square > img,
+.featured-playlist-card > .aspect-square > img,
+.my-playlist-card > .aspect-square > img,
+.radio-channel-card > .aspect-square > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Animação de profundidade aplicada apenas à capa (não ao card inteiro) */
+  transform: perspective(900px) scale(1);
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Ao passar o cursor ou interagir, a capa avança em direção ao usuário (profundidade),
+   sem translação vertical e sem deslocar título/infos/layout */
+.special-playlist-card:hover > .aspect-square > img,
+.featured-playlist-card:hover > .aspect-square > img,
+.my-playlist-card:hover > .aspect-square > img,
+.radio-channel-card:hover > .aspect-square > img,
+.special-playlist-card:focus-within > .aspect-square > img,
+.featured-playlist-card:focus-within > .aspect-square > img,
+.my-playlist-card:focus-within > .aspect-square > img,
+.radio-channel-card:focus-within > .aspect-square > img {
+  transform: perspective(900px) scale(1.08);
+}
+
+/* ===== Reordenação das playlists (my-playlists-section) ===== */
+.my-playlists-reorder-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 6px 11px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.7rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), background 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.my-playlists-reorder-btn:hover {
+  transform: translateY(-1px);
+  color: rgba(255, 218, 188, 0.98);
+  background: rgba(240, 120, 31, 0.1);
+  border-color: rgba(240, 120, 31, 0.3);
+}
+
+.my-playlists-reorder-btn.is-active {
+  color: #fff;
+  background: rgba(240, 120, 31, 0.22);
+  border-color: rgba(240, 120, 31, 0.55);
+  box-shadow: 0 0 0 1px rgba(240, 120, 31, 0.25), 0 8px 20px -10px rgba(240, 120, 31, 0.5);
+}
+
+.my-playlists-reorder-btn i {
+  font-size: 0.95rem;
+}
+
+/* Modo de edição: evita seleção de texto acidental durante o arraste */
+#my-playlists-section.is-editing {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Modo de edição: cards "tremem" levemente e ganham cursor de arraste */
+#my-playlists-section.is-editing .my-playlist-card:not(.playlist-card-fixed) {
+  cursor: grab;
+  animation: playlistWiggle 0.62s ease-in-out infinite;
+}
+
+#my-playlists-section.is-editing .my-playlist-card:not(.playlist-card-fixed):nth-child(even) {
+  animation-delay: -0.31s;
+}
+
+#my-playlists-section.is-editing .my-playlist-card.playlist-card-fixed {
+  cursor: default;
+  opacity: 0.85;
+}
+
+#my-playlists-section.is-editing .my-playlist-card:active {
+  cursor: grabbing;
+}
+
+/* Lixeira oculta por padrão (fora do modo de reordenação), evitando exclusões acidentais */
+.my-playlist-card .delete-playlist-btn {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+  transition: opacity 220ms ease, transform 240ms cubic-bezier(0.16, 1, 0.3, 1), background 180ms ease;
+}
+
+/* Lixeira aparece com animação suave apenas no modo de reordenação */
+#my-playlists-section.is-editing .my-playlist-card .delete-playlist-btn {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* Evita conflito entre a animação de profundidade da capa e o modo de edição */
+#my-playlists-section.is-editing .my-playlist-card:hover > .aspect-square > img,
+#my-playlists-section.is-editing .my-playlist-card:focus-within > .aspect-square > img {
+  transform: perspective(900px) scale(1);
+}
+
+@keyframes playlistWiggle {
+  0%   { transform: rotate(-1.05deg); }
+  50%  { transform: rotate(1.05deg); }
+  100% { transform: rotate(-1.05deg); }
+}
+
+/* Estados do drag-and-drop (SortableJS) */
+.playlist-sortable-ghost {
+  opacity: 0.25;
+}
+
+.playlist-sortable-chosen {
+  animation: none !important;
+}
+
+.playlist-sortable-drag {
+  box-shadow: 0 28px 70px -28px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(240, 120, 31, 0.4) !important;
+  cursor: grabbing;
+}
+
+/* Discover Play Button (shared by special & featured cards) */
+.discover-play-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.group:hover .discover-play-wrapper {
+  opacity: 1;
+}
+
+/* Botão Play das capas — cor de acento preservada; blur/refração/camadas de
+   vidro vêm do material .liquid-glass (aplicado junto no HTML/JS). */
+.discover-play-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--btn-color, #f97316) 50%, transparent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transform: scale(0.9);
+  transition: transform 0.2s ease, background 0.2s ease;
+  pointer-events: auto;
+  padding: 0;
+  margin: 0;
+}
+
+.group:hover .discover-play-circle {
+  transform: scale(1);
+}
+
+.discover-play-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  display: block;
+}
+
+/* Responsividade Extra Small */
+@media (max-width: 360px) {
+  .track-item {
+    grid-template-columns: 36px minmax(0, 1fr) 28px 28px;
+    column-gap: 4px;
+    padding: 0.4rem;
+  }
+
+  .track-item .flex-shrink-0 {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .track-item .track-duration {
+    display: none;
+  }
+
+  .track-item .track-add-watch-later-btn,
+  .track-item .track-remove-watch-later-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  #player-modal header {
+    padding: 0.5rem 0.75rem;
+  }
+
+  #player-modal #tracks-container {
+    padding: 90px 0.5rem 0 !important;
+  }
+}
+
+/* Responsividade Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+  #player-modal .playlist-item {
+    width: 110px !important;
+  }
+
+  #player-modal .playlist-item img {
+    width: 110px !important;
+    height: 110px !important;
+  }
+}
+
+/* Animações do Player */
+@keyframes soundWave {
+
+  0%,
+  100% {
+    height: 8px;
+  }
+
+  50% {
+    height: 24px;
+  }
+}
+
+/* Playlist Screen Background (Dynamic) */
+#player-screen-playlist::before {
+  max-width: none !important;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateZ(0);
+  width: 100vw;
+  height: 500px;
+  background-color: transparent;
+  background-image: var(--playlist-header-bg, none);
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);
+  transition: background-image 0.5s ease-in-out;
+}
+
+#player-screen-playlist > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Radio Screen Background */
+#player-screen-radio {
+  position: relative;
+}
+
+#player-screen-radio::before {
+  max-width: none !important;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateZ(0);
+  width: 100vw;
+  height: 500px;
+  background:
+    url('../assets/images/radio/Sunshine_Live_90er_2024.jpg') center top / cover no-repeat;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);
+}
+
+#player-screen-radio>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* Radio Channel Cards */
+.radio-channel-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.radio-channel-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.radio-channel-card.active {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* Radio Card Darkening Overlay */
+.radio-channel-card.active .radio-card-darken,
+.radio-channel-card:hover .radio-card-darken {
+  opacity: 1;
+}
+
+.radio-card-darken {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Hide play button on active radio card */
+.radio-channel-card.active .radio-play-wrapper {
+  display: none !important;
+}
+
+/* Radio Play Button */
+.radio-play-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.radio-channel-card:hover .radio-play-wrapper {
+  opacity: 1;
+}
+
+.radio-play-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--btn-color, #3b82f6) 50%, transparent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transform: scale(0.9);
+  transition: transform 0.2s ease, background 0.2s ease;
+  pointer-events: auto;
+  padding: 0;
+  margin: 0;
+}
+
+.radio-play-circle .radio-icon-play,
+.radio-play-circle .radio-icon-spinner {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  display: block;
+}
+
+.radio-play-circle .radio-icon-spinner {
+  transform-origin: center center;
+  animation: spinner-rotate 1s linear infinite;
+}
+
+.radio-channel-card:hover .radio-play-circle {
+  transform: scale(1);
+}
+
+/* Loading: show spinner instead of play icon */
+.radio-icon-spinner {
+  display: none !important;
+}
+
+.radio-channel-card.loading .radio-play-wrapper {
+  opacity: 1 !important;
+  pointer-events: none;
+}
+
+.radio-channel-card.loading .radio-icon-play {
+  display: none !important;
+}
+
+.radio-channel-card.loading .radio-icon-spinner {
+  display: block !important;
+}
+
+.radio-channel-card.loading .radio-card-darken {
+  opacity: 1;
+}
+
+.radio-channel-card .radio-card-text {
+  z-index: 3;
+}
+
+/* Controls bar radio mode */
+#player-controls-bar.radio-mode .controls-center {
+  flex: 1;
+}
+
+/* Radio disabled transport buttons */
+#player-controls-bar button.radio-disabled,
+#mini-player-bar button.radio-disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Conteúdo rola até o limite real da viewport e passa sob o footer fixo. */
+#player-modal {
+  padding-bottom: 0 !important;
+}
+
+
+#youtube-search-content {
+  --youtube-search-top-clearance: 60px;
+  --youtube-search-bottom-clearance: calc(180px + env(safe-area-inset-bottom, 0px));
+  scroll-padding-bottom: var(--youtube-search-bottom-clearance) !important;
+}
+
+
+
+#youtube-empty-state {
+  min-height: max(280px, calc(100% - var(--youtube-search-top-clearance) - var(--youtube-search-bottom-clearance))) !important;
+  padding-top: 0 !important;
+  padding-bottom: 20px;
+  transform: translateY(-10px);
+}
+
+#manual-search-results:not(.hidden) {
+  padding-bottom: var(--youtube-search-bottom-clearance);
+  scroll-margin-bottom: var(--youtube-search-bottom-clearance);
+}
+
+#manual-search-results.is-empty {
+  min-height: max(280px, calc(100% - var(--youtube-search-top-clearance) - var(--youtube-search-bottom-clearance))) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#manual-search-results.is-empty .manual-search-empty-state {
+  width: 100%;
+  transform: translateY(-10px);
+}
+
+#tracks-container,
+#youtube-search-content {
+  --playlist-empty-top-clearance: 130px;
+  --playlist-empty-bottom-clearance: calc(180px + env(safe-area-inset-bottom, 0px));
+}
+
+#tracks-container {
+  scroll-padding-bottom: var(--playlist-empty-bottom-clearance) !important;
+}
+
+
+
+#playlist-empty-state {
+  top: var(--playlist-empty-top-clearance);
+  bottom: var(--playlist-empty-bottom-clearance);
+  transform: translateY(24px);
+}
+
+#youtube-empty-state {
+  top: var(--playlist-empty-top-clearance);
+  bottom: var(--playlist-empty-bottom-clearance);
+}
+
+#youtube-search-btn-container {
+  bottom: calc(156px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+@media (max-width: 480px) {
+  #tracks-container {
+    --playlist-empty-top-clearance: 140px;
+  }
+}

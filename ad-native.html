@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { 
+      margin: 0; 
+      padding: 0; 
+      display: flex; 
+      justify-content: center; 
+      background: transparent; 
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #ffffff !important;
+    }
+    
+    /* Força qualquer elemento injetado pela Adsterra a herdar a cor branca */
+    #container-49b9fc663654c5ec16753931eb73072a * {
+      color: #ffffff !important;
+      font-family: inherit !important;
+    }
+    
+    a, span, p, div {
+      color: #ffffff !important;
+      text-decoration: none !important;
+    }
+    
+    /* HACK: Força o layout 1x1 via CSS caso o painel da Adsterra esteja com cache em 1x2 */
+    [class$="__stand"] {
+      display: flex !important;
+      justify-content: center !important;
+      flex-wrap: wrap !important;
+      width: 100% !important;
+    }
+    
+    /* Oculta completamente do 2º banner em diante */
+    [class$="__bn-container"]:nth-child(n+2) {
+      display: none !important;
+    }
+    
+    /* Garante que o 1º banner ocupe o espaço ideal */
+    [class$="__bn-container"]:first-child {
+      display: flex !important;
+      width: 100% !important;
+      max-width: 350px !important;
+      margin: 0 auto !important;
+    }
+    
+    /* Fallback para bloqueadores de anúncios (Adblock) */
+    #container-49b9fc663654c5ec16753931eb73072a:empty::before {
+      content: "Espaço publicitário";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 320px; /* Mesma altura do iframe */
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.22);
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <script async="async" data-cfasync="false" src="https://pl30727891.effectivecpmnetwork.com/49b9fc663654c5ec16753931eb73072a/invoke.js"></script>
+  <div id="container-49b9fc663654c5ec16753931eb73072a"></div>
+</body>
+</html>
