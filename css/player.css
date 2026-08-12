@@ -1013,18 +1013,18 @@
 
 
 
-/* Progress bar (Apple Music Style) */
+/* Progress bar (Apple Music Style - Ultra Minimalist Bottom Line) */
 .player-progress-container {
   position: absolute;
-  bottom: 4px;
+  bottom: 0px;
   left: 30px;
   right: 30px;
-  height: 2.5px;
+  height: 2px;
   background: rgba(255, 255, 255, 0.15);
   cursor: pointer;
   z-index: 10;
-  transition: height 0.15s cubic-bezier(0.2, 0, 0, 1), bottom 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s ease;
-  border-radius: 2px;
+  transition: height 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s ease;
+  border-radius: 2px 2px 0 0; /* Only curve the top slightly if at the very bottom */
   pointer-events: auto; /* MUST have this, parent has none */
   touch-action: none; /* Prevent scrolling while dragging on mobile */
 }
@@ -1045,14 +1045,14 @@
   width: 0%;
   background: rgba(255, 255, 255, 0.95);
   pointer-events: none;
-  border-radius: 2px;
+  border-radius: 2px 2px 0 0;
   transition: width 0.1s linear;
 }
 
 /* Time display */
 .progress-time {
   position: absolute;
-  bottom: 12px;
+  bottom: 10px;
   font-size: 11px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
@@ -1066,38 +1066,26 @@
 .progress-time.current-time { left: 0; }
 .progress-time.remaining-time { right: 0; }
 
-/* Safe Hover / Active states */
+/* Safe Hover / Active states - Strictly localized to the line */
 @media (hover: hover) {
   .player-progress-container:hover {
-    height: 5px;
-    bottom: 3px;
+    height: 4px;
     background: rgba(255, 255, 255, 0.25);
   }
   .player-progress-container:hover .progress-time {
     opacity: 1;
     transform: translateY(0);
   }
-  #player-controls-bar:has(.player-progress-container:hover) .controls-inner {
-    opacity: 0.25;
-    filter: blur(6px);
-    transform: scale(0.98);
-  }
 }
 
 /* JS fallback class for active dragging/touching */
 #player-controls-bar.progress-hovered .player-progress-container {
-  height: 5px;
-  bottom: 3px;
+  height: 4px;
   background: rgba(255, 255, 255, 0.25);
 }
 #player-controls-bar.progress-hovered .progress-time {
   opacity: 1;
   transform: translateY(0);
-}
-#player-controls-bar.progress-hovered .controls-inner {
-  opacity: 0.25;
-  filter: blur(6px);
-  transform: scale(0.98);
 }
 
 /* Player Controls Bar */
