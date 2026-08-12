@@ -1019,35 +1019,42 @@
   bottom: 0px; /* Aligned exactly to the inner bottom edge */
   left: 30px;
   right: 30px;
-  height: 1px; /* Pure line of light */
+  height: 10px; /* Taller to allow internal upward glow */
   background: transparent; /* No conventional track */
   cursor: pointer;
   z-index: 10;
   border-radius: 0;
   pointer-events: auto; /* MUST have this, parent has none */
   touch-action: none; /* Prevent scrolling while dragging on mobile */
-  transition: opacity 0.2s ease;
 }
 
 /* Invisible oversized area to make hovering easier */
 .player-progress-container::after {
   content: '';
   position: absolute;
-  top: -16px;
-  bottom: -10px; /* Extended to cover bottom edge */
+  top: -10px;
+  bottom: -10px;
   left: -20px;
   right: -20px;
   z-index: -1;
 }
 
 .player-progress-bar {
-  height: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1px; /* Pure line of light */
   width: 0%;
-  background: rgba(255, 255, 255, 0.5); /* Subtle base light */
-  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.4); /* Pure glowing reflection */
+  background: #ffffff; /* Base light */
+  /* Upward-only glow prevents leaking outside the player bottom */
+  box-shadow: 0 -2px 6px 0 rgba(255, 255, 255, 0.5);
   pointer-events: none;
   border-radius: 0;
-  transition: box-shadow 0.2s ease, background 0.2s ease;
+  /* Fades the extremities of the active light to transparent */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
+  opacity: 0.6;
+  transition: box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 /* Time display */
@@ -1070,8 +1077,8 @@
 /* Safe Hover / Active states */
 @media (hover: hover) {
   .player-progress-container:hover .player-progress-bar {
-    background: rgba(255, 255, 255, 0.9); /* Brighter light */
-    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.7); /* Wider glow */
+    opacity: 1; /* Brighter light */
+    box-shadow: 0 -3px 10px 1px rgba(255, 255, 255, 0.7); /* Wider upward glow */
   }
   .player-progress-container:hover .progress-time {
     opacity: 1;
@@ -1081,8 +1088,8 @@
 
 /* JS fallback class for active dragging/touching */
 #player-controls-bar.progress-hovered .player-progress-bar {
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.7);
+  opacity: 1;
+  box-shadow: 0 -3px 10px 1px rgba(255, 255, 255, 0.7);
 }
 #player-controls-bar.progress-hovered .progress-time {
   opacity: 1;
