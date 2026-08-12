@@ -1017,8 +1017,8 @@
 .player-progress-container {
   position: absolute;
   bottom: 0px; /* Aligned exactly to the inner bottom edge */
-  left: 30px;
-  right: 30px;
+  left: 45px; /* Reduced width (was 30px) */
+  right: 45px;
   height: 10px; /* Taller to allow internal upward glow */
   background: transparent; /* No conventional track */
   cursor: pointer;
@@ -1047,7 +1047,8 @@
   width: 0%;
   
   /* Solid core that fades transparent at the tips, ensuring no sharp edges */
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 140, 0, 1) 20%, rgba(255, 140, 0, 1) 80%, transparent 100%);
+  /* Using absolute pixels guarantees the fade is always smooth regardless of the bar's current width */
+  background: linear-gradient(90deg, transparent 0px, rgba(255, 140, 0, 1) 40px, rgba(255, 140, 0, 1) calc(100% - 40px), transparent 100%);
   
   /* Stacked drop-shadows create an intense aura that naturally respects the gradient's fade */
   -webkit-filter: drop-shadow(0 -2px 4px rgba(255, 100, 0, 1)) drop-shadow(0 -2px 10px rgba(255, 150, 0, 1));
@@ -1080,7 +1081,7 @@
 @media (hover: hover) {
   .player-progress-container:hover .player-progress-bar {
     opacity: 1; 
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 160, 0, 1) 20%, rgba(255, 160, 0, 1) 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0px, rgba(255, 160, 0, 1) 40px, rgba(255, 160, 0, 1) calc(100% - 40px), transparent 100%);
     /* Triple-stacked drop-shadow for an explosive neon light effect */
     -webkit-filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -5px 15px rgba(255, 150, 0, 1)) drop-shadow(0 -8px 25px rgba(255, 200, 0, 0.8));
     filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -5px 15px rgba(255, 150, 0, 1)) drop-shadow(0 -8px 25px rgba(255, 200, 0, 0.8));
@@ -1100,7 +1101,7 @@
 /* JS fallback class for active dragging/touching */
 #player-controls-bar.progress-hovered .player-progress-bar {
   opacity: 1;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 160, 0, 1) 20%, rgba(255, 160, 0, 1) 80%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0px, rgba(255, 160, 0, 1) 40px, rgba(255, 160, 0, 1) calc(100% - 40px), transparent 100%);
   -webkit-filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -5px 15px rgba(255, 150, 0, 1)) drop-shadow(0 -8px 25px rgba(255, 200, 0, 0.8));
   filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -5px 15px rgba(255, 150, 0, 1)) drop-shadow(0 -8px 25px rgba(255, 200, 0, 0.8));
 }
