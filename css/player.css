@@ -1046,16 +1046,16 @@
   height: 1px; /* Pure line of light */
   width: 0%;
   
-  /* Discreet orange gradient that fades to transparent at BOTH ends */
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 140, 0, 0.4) 50%, rgba(255, 100, 0, 0.9) 90%, transparent 100%);
+  /* Base orange gradient that fades to transparent at BOTH ends */
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 150, 0, 0.6) 50%, rgba(255, 120, 0, 1) 90%, transparent 100%);
   
-  /* Subtle drop-shadow for the normal state */
-  -webkit-filter: drop-shadow(0 -1px 3px rgba(255, 120, 0, 0.5));
-  filter: drop-shadow(0 -1px 3px rgba(255, 120, 0, 0.5));
+  /* Visible but calm drop-shadow for the normal state */
+  -webkit-filter: drop-shadow(0 -2px 4px rgba(255, 120, 0, 0.8));
+  filter: drop-shadow(0 -2px 4px rgba(255, 120, 0, 0.8));
   
   pointer-events: none;
   border-radius: 0;
-  opacity: 0.6; /* Discreet base visibility */
+  opacity: 0.95; /* High base visibility so the orange color is clear */
   transition: filter 0.2s ease, -webkit-filter 0.2s ease, opacity 0.2s ease, background 0.2s ease;
 }
 
