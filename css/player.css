@@ -1016,10 +1016,10 @@
 /* Progress bar (Energy Line Concept) */
 .player-progress-container {
   position: absolute;
-  bottom: 0px; /* Aligned exactly to the inner bottom edge */
+  bottom: 6px; /* Floating a few pixels above the bottom edge */
   left: 30px;
   right: 30px;
-  height: 10px; /* Taller to allow internal upward glow */
+  height: 4px; /* Invisible core height for the light */
   background: transparent; /* No conventional track */
   cursor: pointer;
   z-index: 10;
@@ -1032,8 +1032,8 @@
 .player-progress-container::after {
   content: '';
   position: absolute;
-  top: -10px;
-  bottom: -10px;
+  top: -12px;
+  bottom: -12px;
   left: -20px;
   right: -20px;
   z-index: -1;
@@ -1043,26 +1043,26 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 1px; /* Pure line of light */
+  height: 100%; 
   width: 0%;
   
-  /* Base orange gradient that fades to transparent at BOTH ends */
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 150, 0, 0.6) 50%, rgba(255, 120, 0, 1) 90%, transparent 100%);
+  /* Orange gradient that fades to transparent at BOTH ends */
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 150, 0, 0.7) 40%, rgba(255, 120, 0, 1) 90%, transparent 100%);
   
-  /* Visible but calm drop-shadow for the normal state */
-  -webkit-filter: drop-shadow(0 -2px 4px rgba(255, 120, 0, 0.8));
-  filter: drop-shadow(0 -2px 4px rgba(255, 120, 0, 0.8));
+  /* Blurring the gradient itself destroys any hard lines, creating a pure diffuse light cloud */
+  -webkit-filter: blur(4px);
+  filter: blur(4px);
   
   pointer-events: none;
-  border-radius: 0;
-  opacity: 0.95; /* High base visibility so the orange color is clear */
+  border-radius: 10px;
+  opacity: 0.85; /* Strong base visibility */
   transition: filter 0.2s ease, -webkit-filter 0.2s ease, opacity 0.2s ease, background 0.2s ease;
 }
 
 /* Time display */
 .progress-time {
   position: absolute;
-  bottom: 12px;
+  bottom: 14px;
   font-size: 11px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
@@ -1079,11 +1079,11 @@
 /* Safe Hover / Active states */
 @media (hover: hover) {
   .player-progress-container:hover .player-progress-bar {
-    opacity: 1; /* Intense brightness on hover */
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 150, 0, 0.6) 50%, rgba(255, 100, 0, 1) 90%, transparent 100%);
-    /* Double-layered intense upward orange glow */
-    -webkit-filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -4px 10px rgba(255, 120, 0, 0.7));
-    filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -4px 10px rgba(255, 120, 0, 0.7));
+    opacity: 1; /* Maximum brightness */
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 160, 0, 0.8) 40%, rgba(255, 100, 0, 1) 90%, transparent 100%);
+    /* Increase the blur radius to expand the glow smoothly without creating hard shapes */
+    -webkit-filter: blur(6px);
+    filter: blur(6px);
   }
   .player-progress-container:hover .progress-time {
     opacity: 1;
@@ -1100,9 +1100,9 @@
 /* JS fallback class for active dragging/touching */
 #player-controls-bar.progress-hovered .player-progress-bar {
   opacity: 1;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 150, 0, 0.6) 50%, rgba(255, 100, 0, 1) 90%, transparent 100%);
-  -webkit-filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -4px 10px rgba(255, 120, 0, 0.7));
-  filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -4px 10px rgba(255, 120, 0, 0.7));
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 160, 0, 0.8) 40%, rgba(255, 100, 0, 1) 90%, transparent 100%);
+  -webkit-filter: blur(6px);
+  filter: blur(6px);
 }
 #player-controls-bar.progress-hovered .progress-time {
   opacity: 1;
