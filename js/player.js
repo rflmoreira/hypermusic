@@ -5437,7 +5437,12 @@ const MUSIC_PLAYER = (() => {
         isDragging = false;
         seekTo(e);
         container.releasePointerCapture(e.pointerId);
-        if (!isHovered && playerBar) playerBar.classList.remove('progress-hovered');
+        
+        // Touch devices often simulate a sticky hover state. Force remove it on release.
+        if (e.pointerType === 'touch' || !isHovered) {
+          isHovered = false;
+          if (playerBar) playerBar.classList.remove('progress-hovered');
+        }
       }
     };
 
