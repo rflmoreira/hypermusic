@@ -4725,18 +4725,24 @@ const MUSIC_PLAYER = (() => {
       lyricsState.requestedKey = null;
     }
 
-    // Atualiza o estado ativado/desativado do botão de avançar
+    // Atualiza o estado ativado/desativado do botão de avançar e voltar
     let hasNext = false;
+    let hasPrev = false;
     if (isPlayingFromYouTube()) {
       const allItems = getYouTubeSearchItems();
       const currentIndex = getCurrentYouTubeSearchIndex(allItems);
       hasNext = currentIndex >= 0 && currentIndex < allItems.length - 1;
+      hasPrev = currentIndex > 0;
     } else {
       const { tracks, index } = getCurrentPlayingTrack();
       hasNext = tracks && tracks.length > 0 && index >= 0 && index < tracks.length - 1;
+      hasPrev = tracks && tracks.length > 0 && index > 0;
     }
     if (ui.ctrlNext) {
       ui.ctrlNext.disabled = !hasNext;
+    }
+    if (ui.ctrlPrev) {
+      ui.ctrlPrev.disabled = !hasPrev;
     }
   }
 
