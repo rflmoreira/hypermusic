@@ -864,14 +864,13 @@
   overflow: hidden;
 }
 
-/* --- FRESH CONTROLS-RIGHT LAYOUT --- */
+/* Right side: play/pause + next */
 .player-bar .controls-right {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 16px; /* Generous breathing room */
+  gap: 2px;
   flex-shrink: 0;
-  margin-right: -4px; /* Optical balance adjusted to perfection */
+  margin-right: -10px; /* Optical balance adjusted */
 }
 
 /* Ensure hidden elements do not participate in flexbox space-between */
@@ -925,48 +924,23 @@
   pointer-events: none;
 }
 
-/* --- FRESH BUTTON LAYOUT (REBUILT FROM ZERO) --- */
-.player-bar .premium-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s ease, color 0.2s ease;
-  padding: 0;
+/* Play, Prev and Next buttons: identically sized for balance */
+.player-bar .play-btn,
+.player-bar .prev-btn,
+.player-bar .next-btn {
+  width: 44px;
+  height: 44px;
+  font-size: 28px;
 }
 
-.player-bar .premium-btn:active:not(:disabled) {
-  transform: scale(0.92);
-}
-
-.player-bar .premium-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-/* Side buttons (Prev/Next) */
-.player-bar .premium-btn.btn-side {
-  width: 36px;
-  height: 36px;
-  font-size: 22px;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.player-bar .premium-btn.btn-side:hover:not(:disabled) {
-  color: rgba(255, 255, 255, 1);
-}
-
-/* Main Play button */
-.player-bar .premium-btn.btn-play {
-  width: 48px;
-  height: 48px;
-  font-size: 34px;
+.player-bar .play-btn {
   color: white;
 }
-/* ----------------------------------------------- */
+
+.player-bar .prev-btn,
+.player-bar .next-btn {
+  color: rgba(255, 255, 255, 0.85);
+}
 
 .player-bar .cover-container {
   position: relative;
@@ -1222,6 +1196,7 @@
   }
 
   .player-bar .play-btn,
+  .player-bar .prev-btn,
   .player-bar .next-btn {
     width: 40px;
     height: 40px;
