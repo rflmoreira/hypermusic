@@ -924,7 +924,8 @@
   pointer-events: none;
 }
 
-/* Play and Next buttons: identically sized for balance */
+/* Previous, Play and Next buttons: identically sized for balance */
+.player-bar .prev-btn,
 .player-bar .play-btn,
 .player-bar .next-btn {
   width: 44px;
@@ -936,13 +937,9 @@
   color: white;
 }
 
+.player-bar .prev-btn,
 .player-bar .next-btn {
   color: rgba(255, 255, 255, 0.85);
-}
-
-.player-bar .prev-btn {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 16px;
 }
 
 .player-bar .cover-container {
