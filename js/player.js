@@ -5370,9 +5370,16 @@ const MUSIC_PLAYER = (() => {
 
     let isDragging = false;
     let isHovered = false;
+    const playerBar = document.getElementById('player-controls-bar');
 
-    container.addEventListener('pointerenter', () => isHovered = true);
-    container.addEventListener('pointerleave', () => isHovered = false);
+    container.addEventListener('pointerenter', () => {
+      isHovered = true;
+      if (playerBar) playerBar.classList.add('progress-hovered');
+    });
+    container.addEventListener('pointerleave', () => {
+      isHovered = false;
+      if (!isDragging && playerBar) playerBar.classList.remove('progress-hovered');
+    });
 
     function formatTime(secs) {
       if (!secs || isNaN(secs) || !isFinite(secs)) return '0:00';
@@ -5430,6 +5437,7 @@ const MUSIC_PLAYER = (() => {
         isDragging = false;
         seekTo(e);
         container.releasePointerCapture(e.pointerId);
+        if (!isHovered && playerBar) playerBar.classList.remove('progress-hovered');
       }
     };
 

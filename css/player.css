@@ -1024,6 +1024,7 @@
   z-index: 10;
   transition: height 0.15s cubic-bezier(0.2, 0, 0, 1), bottom 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s ease;
   border-radius: 2px;
+  pointer-events: auto; /* MUST have this, parent has none */
 }
 
 /* Invisible oversized area to make hovering easier */
@@ -1077,7 +1078,8 @@
 
 /* Focus effect: Blur controls-inner when progress bar is hovered */
 #player-controls-bar:has(.player-progress-container:hover) .controls-inner,
-#player-controls-bar:has(.player-progress-container:active) .controls-inner {
+#player-controls-bar:has(.player-progress-container:active) .controls-inner,
+#player-controls-bar.progress-hovered .controls-inner {
   opacity: 0.25;
   filter: blur(6px);
   transform: scale(0.98);
