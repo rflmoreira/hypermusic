@@ -3684,13 +3684,16 @@ const MUSIC_PLAYER = (() => {
 
 
 
-    // Clique no controls-center mostra/esconde a capa flutuante
+    // Clique no controls-left mostra/esconde a capa flutuante
     const ctrlBar = document.getElementById('player-controls-bar');
-    const ctrlCenter = ctrlBar?.querySelector('.controls-center');
-    ctrlCenter?.addEventListener('click', (e) => {
-      if (e.target.closest('button')) return;
-      toggleExpandedCover();
-    });
+    const ctrlLeft = ctrlBar?.querySelector('.controls-left');
+    if (ctrlLeft) {
+      ctrlLeft.style.cursor = 'pointer';
+      ctrlLeft.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        toggleExpandedCover();
+      });
+    }
 
     // Clique na capa expandida fecha (exceto no alternador Capa/Vídeo e na
     // área de letras, que tem interação própria de ajuste de sincronia)
@@ -4359,7 +4362,7 @@ const MUSIC_PLAYER = (() => {
     const { tracks, index } = getCurrentPlayingTrack();
     if (!tracks.length) return;
     let nextIndex = index + 1;
-    if (nextIndex >= tracks.length) nextIndex = repeatEnabled ? 0 : -1;
+    if (nextIndex >= tracks.length) nextIndex = -1;
     if (nextIndex === -1) return;
     const shouldCrossfade = useCrossfade && nextIndex !== index;
     playTrackInternal(nextIndex, {
@@ -4584,7 +4587,7 @@ const MUSIC_PLAYER = (() => {
 
     const playIcon = playBtn?.querySelector('i');
     if (playIcon) {
-      playIcon.className = state.isPlaying ? 'ph-bold ph-pause' : 'ph-bold ph-play';
+      playIcon.className = state.isPlaying ? 'ph-fill ph-pause' : 'ph-fill ph-play';
     }
 
     coverEl?.classList.toggle('playing', state.isPlaying);
@@ -4720,6 +4723,20 @@ const MUSIC_PLAYER = (() => {
       clearLyrics();
       lyricsState.key = null;
       lyricsState.requestedKey = null;
+    }
+
+    // Atualiza o estado ativado/desativado do botão de avançar
+    let hasNext = false;
+    if (isPlayingFromYouTube()) {
+      const allItems = getYouTubeSearchItems();
+      const currentIndex = getCurrentYouTubeSearchIndex(allItems);
+      hasNext = currentIndex >= 0 && currentIndex < allItems.length - 1;
+    } else {
+      const { tracks, index } = getCurrentPlayingTrack();
+      hasNext = tracks && tracks.length > 0 && index >= 0 && index < tracks.length - 1;
+    }
+    if (ui.ctrlNext) {
+      ui.ctrlNext.disabled = !hasNext;
     }
   }
 
@@ -5321,6 +5338,7 @@ const MUSIC_PLAYER = (() => {
 
         // Inicializa a rádio
         initRadio();
+        initMainProgressBar();
 
         // Como o player agora é standalone e permanentemente aberto:
         lockBodyScroll();
@@ -5339,6 +5357,112 @@ const MUSIC_PLAYER = (() => {
     })();
 
     return initPromise;
+  }
+
+  let mainProgressRaf = null;
+
+  function initMainProgressBar() {
+    const container = document.getElementById('ctrl-progress-container');
+    const bar = document.getElementById('ctrl-progress-bar');
+    const currentEl = document.getElementById('ctrl-progress-current');
+    const remainingEl = document.getElementById('ctrl-progress-remaining');
+    if (!container || !bar) return;
+
+    let isDragging = false;
+    let isHovered = false;
+
+    container.addEventListener('pointerenter', () => isHovered = true);
+    container.addEventListener('pointerleave', () => isHovered = false);
+
+    function formatTime(secs) {
+      if (!secs || isNaN(secs) || !isFinite(secs)) return '0:00';
+      const m = Math.floor(Math.abs(secs) / 60);
+      const s = Math.floor(Math.abs(secs) % 60);
+      return (secs < 0 ? '-' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function getMediaDuration() {
+      if (videoMode && videoMode.isVideo()) return videoMode.getDuration() || 0;
+      let dur = audio.duration || 0;
+      if (!dur || !Number.isFinite(dur)) {
+        const { track } = getCurrentPlayingTrack();
+        if (track && track.duration_ms) dur = track.duration_ms / 1000;
+      }
+      return dur;
+    }
+
+    function seekTo(e) {
+      if (!hasValidTrack()) return;
+      const rect = container.getBoundingClientRect();
+      const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const dur = getMediaDuration();
+      
+      if (videoMode && videoMode.isVideo()) {
+        if (dur > 0) videoMode.seekTo(pos * dur);
+      } else {
+        if (dur > 0) audio.currentTime = pos * dur;
+      }
+    }
+
+    container.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      seekTo(e);
+      container.setPointerCapture(e.pointerId);
+    });
+
+    container.addEventListener('pointermove', (e) => {
+      if (isDragging) {
+        const rect = container.getBoundingClientRect();
+        const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        bar.style.width = `${pos * 100}%`;
+        
+        const dur = getMediaDuration();
+        if (dur > 0 && currentEl && remainingEl) {
+          const scrubTime = pos * dur;
+          currentEl.textContent = formatTime(scrubTime);
+          remainingEl.textContent = formatTime(scrubTime - dur);
+        }
+      }
+    });
+
+    const stopDrag = (e) => {
+      if (isDragging) {
+        isDragging = false;
+        seekTo(e);
+        container.releasePointerCapture(e.pointerId);
+      }
+    };
+
+    container.addEventListener('pointerup', stopDrag);
+    container.addEventListener('pointercancel', stopDrag);
+
+    function updateLoop() {
+      if (!isDragging) {
+        let cur = 0, dur = getMediaDuration();
+        if (videoMode && videoMode.isVideo()) {
+          cur = videoMode.getCurrentTime();
+        } else {
+          cur = audio.currentTime || 0;
+        }
+
+        if (dur > 0) {
+          bar.style.width = `${(cur / dur) * 100}%`;
+          if ((isHovered || isDragging) && currentEl && remainingEl) {
+            currentEl.textContent = formatTime(cur);
+            remainingEl.textContent = formatTime(cur - dur);
+          }
+        } else {
+          bar.style.width = '0%';
+          if ((isHovered || isDragging) && currentEl && remainingEl) {
+            currentEl.textContent = '0:00';
+            remainingEl.textContent = '-0:00';
+          }
+        }
+      }
+      mainProgressRaf = requestAnimationFrame(updateLoop);
+    }
+    
+    updateLoop();
   }
 
   function updatePlaylistEmptyState() {
@@ -6579,10 +6703,6 @@ const MUSIC_PLAYER = (() => {
     if (nextIndex < allItems.length) {
       const nextItem = allItems[nextIndex];
       playYouTubeSearchResult(nextItem);
-    } else if (repeatEnabled && allItems.length > 0) {
-      // Se repeat está ativo, volta para o primeiro
-      const firstItem = allItems[0];
-      playYouTubeSearchResult(firstItem);
     } else {
       // Fim da lista
       clearYouTubePlaybackState();
@@ -10981,7 +11101,7 @@ const MUSIC_PLAYER = (() => {
 
       // Restaura o play button para controle de música
       const playIcon = ui.ctrlPlay?.querySelector('i');
-      if (playIcon) playIcon.className = state.isPlaying ? 'ph-bold ph-pause' : 'ph-bold ph-play';
+      if (playIcon) playIcon.className = state.isPlaying ? 'ph-fill ph-pause' : 'ph-fill ph-play';
 
       // Restaura info da música e media session
       updateControlsBar();
@@ -10997,7 +11117,7 @@ const MUSIC_PLAYER = (() => {
 
     // Play/pause controla a rádio
     const playIcon = ui.ctrlPlay?.querySelector('i');
-    if (playIcon) playIcon.className = 'ph-bold ph-stop';
+    if (playIcon) playIcon.className = 'ph-fill ph-stop';
 
     // Atualiza info com dados da rádio
     if (ui.ctrlTitle) ui.ctrlTitle.textContent = radioCurrentChannel.name;

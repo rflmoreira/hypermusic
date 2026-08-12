@@ -845,9 +845,36 @@
 .player-bar .controls-inner {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 12px;
   position: relative;
   z-index: 2;
+  width: 100%;
+  transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+}
+
+/* Left side: cover + track info */
+.player-bar .controls-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Right side: play/pause + next */
+.player-bar .controls-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-right: -10px; /* Optical balance adjusted */
+}
+
+/* Ensure hidden elements do not participate in flexbox space-between */
+#player-controls-bar .hidden {
+  display: none !important;
 }
 
 .player-bar .controls-group {
@@ -870,43 +897,58 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none;
+  background: transparent;
   border: none;
+  border-radius: 50%;
   cursor: pointer;
-  transition: transform 0.15s ease, color 0.15s ease;
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s ease;
   width: 28px;
   height: 28px;
   color: rgba(255, 255, 255, 0.35);
   font-size: 15px;
 }
 
-.player-bar button:hover {
-  transform: scale(1.1);
-  color: rgba(255, 255, 255, 0.7);
+.player-bar button:hover:not(:disabled) {
+  /* O estado hover deve permanecer idêntico ao estado padrão */
 }
 
-.player-bar button:active {
-  transform: scale(0.95);
+.player-bar button:active:not(:disabled) {
+  transform: scale(0.96);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.player-bar button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Play and Next buttons: identically sized for balance */
+.player-bar .play-btn,
+.player-bar .next-btn {
+  width: 44px;
+  height: 44px;
+  font-size: 28px;
 }
 
 .player-bar .play-btn {
-  width: 32px;
-  height: 32px;
   color: white;
-  font-size: 20px;
 }
 
-.player-bar .prev-btn,
 .player-bar .next-btn {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.player-bar .prev-btn {
   color: rgba(255, 255, 255, 0.5);
   font-size: 16px;
 }
 
 .player-bar .cover-container {
   position: relative;
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -920,7 +962,7 @@
 
 .player-bar .track-title {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: white;
   margin: 0;
   overflow: hidden;
@@ -938,9 +980,12 @@
 }
 
 .player-bar .info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
-  flex: 0 1 auto;
-  max-width: 180px;
+  flex: 1;
+  overflow: hidden;
 }
 
 .player-bar .volume-control {
@@ -966,6 +1011,77 @@
 }
 
 
+
+/* Progress bar (Apple Music Style) */
+.player-progress-container {
+  position: absolute;
+  bottom: 4px;
+  left: 40px;
+  right: 40px;
+  height: 2.5px;
+  background: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  z-index: 10;
+  transition: height 0.15s cubic-bezier(0.2, 0, 0, 1), bottom 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s ease;
+  border-radius: 2px;
+}
+
+/* Invisible oversized area to make hovering easier */
+.player-progress-container::after {
+  content: '';
+  position: absolute;
+  top: -16px;
+  bottom: -16px;
+  left: -20px;
+  right: -20px;
+  z-index: -1;
+}
+
+.player-progress-container:hover {
+  height: 5px;
+  bottom: 3px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.player-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: rgba(255, 255, 255, 0.95);
+  pointer-events: none;
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+/* Time display in hover state */
+.progress-time {
+  position: absolute;
+  bottom: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s cubic-bezier(0.2, 0, 0, 1), transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.2px;
+}
+
+.player-progress-container:hover .progress-time {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.progress-time.current-time { left: 0; }
+.progress-time.remaining-time { right: 0; }
+
+/* Focus effect: Blur controls-inner when progress bar is hovered */
+#player-controls-bar:has(.player-progress-container:hover) .controls-inner,
+#player-controls-bar:has(.player-progress-container:active) .controls-inner {
+  opacity: 0.25;
+  filter: blur(6px);
+  transform: scale(0.98);
+}
 
 /* Player Controls Bar */
 #player-controls-bar {
@@ -1009,6 +1125,42 @@
 
 #player-controls-bar .controls-inner {
   pointer-events: auto;
+}
+
+/* Responsive: small screens */
+@media (max-width: 480px) {
+  #player-controls-bar {
+    padding: 10px 16px;
+  }
+
+  .player-bar .controls-inner {
+    gap: 8px;
+  }
+
+  .player-bar .controls-left {
+    gap: 8px;
+  }
+
+  .player-bar .cover-container {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+  }
+
+  .player-bar .track-title {
+    font-size: 12px;
+  }
+
+  .player-bar .track-artist {
+    font-size: 10px;
+  }
+
+  .player-bar .play-btn,
+  .player-bar .next-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 24px;
+  }
 }
 
 /* ====== Letras sincronizadas (entre o alternador e a capa) ======
@@ -2534,7 +2686,7 @@ body.video-fullscreen-active #player-launcher {
 }
 
 /* Controls bar radio mode */
-#player-controls-bar.radio-mode .controls-center {
+#player-controls-bar.radio-mode .controls-left {
   flex: 1;
 }
 
