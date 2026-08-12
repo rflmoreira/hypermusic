@@ -10530,9 +10530,17 @@ const MUSIC_PLAYER = (() => {
     });
   }
 
-  // Busca URL de áudio via API /audio com retry exponencial + jitter (apenas para
-  // erros transitórios), blacklist de erros permanentes e circuit breaker.
-  // `ctx.log` (opcional) recebe eventos para o log agrupado por faixa.
+  const INVIDIOUS_INSTANCES = [
+    'https://inv.nadeko.net',
+    'https://invidious.nerdvpn.de',
+    'https://invidious.f5.si',
+    'https://yt.chocolatemoo53.com',
+    'https://invidious.tiekoetter.com',
+    'https://invidious.asir.dev'
+  ];
+
+  // Busca URL de áudio diretamente do frontend nas APIs públicas do Invidious.
+  // Evita o bloqueio 403 do datacenter da Netlify executando direto do IP residencial.
   async function getAudioUrl(videoId, retryCount = 0, ctx = {}) {
     if (!videoId) return null;
     const logEvent = ctx.log || ((tag, msg) => console.log(`${tag} [AUDIO] ${msg}`));
@@ -10545,101 +10553,61 @@ const MUSIC_PLAYER = (() => {
     }
     if (retryCount === 0) metrics.audioCache.misses += 1;
 
-    // Erro permanente já conhecido para este vídeo: nunca repetir a chamada
-    if (permanentAudioFailures.has(videoId)) {
-      logEvent('🚫', `Erro permanente conhecido (${permanentAudioFailures.get(videoId)}), sem nova chamada (${videoId})`);
-      return null;
-    }
+    // Embaralha instâncias para balancear carga e tentar aleatoriamente
+    const instances = [...INVIDIOUS_INSTANCES].sort(() => Math.random() - 0.5);
 
-    // Circuit breaker aberto: falha imediata, degrada para cache/fallback
-    if (!audioCircuit.canRequest()) {
-      logEvent('🔌', `Circuit breaker aberto, /audio bloqueado temporariamente (${videoId})`);
-      return null;
-    }
+    for (const baseUrl of instances) {
+      const startedAt = Date.now();
+      try {
+        logEvent('🔍', `Tentando Invidious: ${baseUrl} (${videoId})`);
+        
+        const response = await fetch(`${baseUrl}/api/v1/videos/${videoId}`, {
+          // Sinal de timeout para não prender o player em instâncias lentas
+          signal: AbortSignal.timeout(5000)
+        });
 
-    const MAX_RETRIES = 4;
-    const retryWithBackoff = async (reasonLabel) => {
-      metrics.resolve.retries += 1;
-      const wait = backoffDelay(retryCount);
-      logEvent('⏳', `Retry: ${reasonLabel}, aguardando ${wait}ms (tentativa ${retryCount + 1}/${MAX_RETRIES})`);
-      await delay(wait);
-      return getAudioUrl(videoId, retryCount + 1, ctx);
-    };
-
-    const startedAt = Date.now();
-    try {
-      const response = await fetch(ApiClient.urls.audio(videoId));
-      const elapsed = Date.now() - startedAt;
-
-      // Conversão em andamento no upstream (202): transitório por definição
-      if (response.status === 202) {
-        if (retryCount < MAX_RETRIES) return retryWithBackoff('processing');
-        audioCircuit.recordSuccess(); // API respondeu; problema é do vídeo, não da infra
-        logEvent('⚠️', `Conversão não terminou após ${retryCount} tentativas (${videoId})`);
-        return null;
-      }
-
-      // Rate limit (429): transitório de infra
-      if (response.status === 429) {
-        audioCircuit.recordInfraFailure();
-        if (retryCount < MAX_RETRIES && audioCircuit.state === 'closed') {
-          return retryWithBackoff('rate-limited');
-        }
-        logEvent('⚠️', `Rate limit persistente (${elapsed}ms, ${videoId})`);
-        return null;
-      }
-
-      if (!response.ok) {
-        const errBody = await response.json().catch(() => null);
-        const reason = errBody?.reason || 'desconhecido';
-
-        // Erros permanentes do vídeo: registra e NUNCA repete
-        if (PERMANENT_AUDIO_REASONS.has(reason)) {
-          audioCircuit.recordSuccess(); // API está saudável; o vídeo é o problema
-          permanentAudioFailures.set(videoId, reason);
-          metrics.resolve.permanentFailures += 1;
-          logEvent('🚫', `Erro permanente: ${reason} (HTTP ${response.status}, ${elapsed}ms, ${videoId})`);
-          return null;
+        if (!response.ok) {
+           logEvent('⚠️', `Invidious HTTP ${response.status} em ${baseUrl}`);
+           continue;
         }
 
-        // Erros de infraestrutura (5xx) contam para o circuit breaker
-        if (response.status >= 500) audioCircuit.recordInfraFailure();
+        const data = await response.json();
+        let audioUrl = null;
 
-        const isRetryable = RETRYABLE_AUDIO_REASONS.has(reason) || errBody?.retryable || response.status >= 500;
-        if (isRetryable && retryCount < MAX_RETRIES && audioCircuit.state === 'closed') {
-          return retryWithBackoff(`HTTP ${response.status} (${reason})`);
+        // Tenta achar áudio no adaptiveFormats
+        if (data.adaptiveFormats && data.adaptiveFormats.length > 0) {
+          const audioFormats = data.adaptiveFormats.filter(f => f.type && f.type.startsWith('audio'));
+          if (audioFormats.length > 0) {
+            audioUrl = audioFormats[0].url;
+          }
+        }
+        
+        // Fallback: tenta achar no formatStreams
+        if (!audioUrl && data.formatStreams && data.formatStreams.length > 0) {
+          const audioFormats = data.formatStreams.filter(f => !f.resolution || f.resolution === 'Audio');
+          if (audioFormats.length > 0) {
+            audioUrl = audioFormats[0].url;
+          }
         }
 
-        logEvent('⚠️', `API falhou: HTTP ${response.status}, motivo=${reason} (${elapsed}ms, ${videoId})`);
-        return null;
+        if (audioUrl) {
+          const elapsed = Date.now() - startedAt;
+          logEvent('✅', `Sucesso via Invidious: ${baseUrl} em ${elapsed}ms`);
+          
+          setCacheEntry(state.audioCache, videoId, audioUrl);
+          debouncedSave();
+          
+          return audioUrl;
+        } else {
+           logEvent('⚠️', `Sem formatos de áudio em ${baseUrl}`);
+        }
+      } catch (err) {
+        logEvent('❌', `Falha de rede em ${baseUrl}: ${err.message}`);
       }
-
-      const data = await response.json();
-
-      if (!data.audioUrl) {
-        audioCircuit.recordSuccess();
-        logEvent('⚠️', `Resposta sem audioUrl (${elapsed}ms, ${videoId})`);
-        return null;
-      }
-
-      audioCircuit.recordSuccess();
-      logEvent('🎵', `YouTube: /audio OK em ${elapsed}ms (${videoId})`);
-
-      // Cache a URL
-      setCacheEntry(state.audioCache, videoId, data.audioUrl);
-      debouncedSave();
-
-      return data.audioUrl;
-
-    } catch (err) {
-      // Erro de rede/timeout: transitório de infra
-      audioCircuit.recordInfraFailure();
-      if (retryCount < MAX_RETRIES && audioCircuit.state === 'closed') {
-        return retryWithBackoff(`rede (${err.message})`);
-      }
-      logEvent('❌', `Erro de rede: ${err.message} (${Date.now() - startedAt}ms, ${videoId})`);
-      return null;
     }
+
+    logEvent('🚫', `Todas as instâncias Invidious falharam para ${videoId}`);
+    return null;
   }
 
   function findNextPlayableIndex(startIndex = 0) {
