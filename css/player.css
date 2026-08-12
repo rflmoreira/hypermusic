@@ -1045,16 +1045,18 @@
   left: 0;
   height: 1px; /* Pure line of light */
   width: 0%;
-  background: #ffffff; /* Base light */
-  /* Upward-only glow prevents leaking outside the player bottom */
-  box-shadow: 0 -2px 6px 0 rgba(255, 255, 255, 0.5);
+  
+  /* Gradient that fades to transparent at BOTH ends, eliminating any cuts */
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 1) 90%, transparent 100%);
+  
+  /* drop-shadow respects gradient transparency (unlike box-shadow), preventing rectangular edges */
+  -webkit-filter: drop-shadow(0 -2px 3px rgba(255, 255, 255, 0.6));
+  filter: drop-shadow(0 -2px 3px rgba(255, 255, 255, 0.6));
+  
   pointer-events: none;
   border-radius: 0;
-  /* Fades the extremities of the active light to transparent */
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
-  opacity: 0.6;
-  transition: box-shadow 0.2s ease, opacity 0.2s ease;
+  opacity: 0.7;
+  transition: filter 0.2s ease, -webkit-filter 0.2s ease, opacity 0.2s ease;
 }
 
 /* Time display */
@@ -1078,7 +1080,8 @@
 @media (hover: hover) {
   .player-progress-container:hover .player-progress-bar {
     opacity: 1; /* Brighter light */
-    box-shadow: 0 -3px 10px 1px rgba(255, 255, 255, 0.7); /* Wider upward glow */
+    -webkit-filter: drop-shadow(0 -3px 5px rgba(255, 255, 255, 0.8));
+    filter: drop-shadow(0 -3px 5px rgba(255, 255, 255, 0.8));
   }
   .player-progress-container:hover .progress-time {
     opacity: 1;
@@ -1089,7 +1092,8 @@
 /* JS fallback class for active dragging/touching */
 #player-controls-bar.progress-hovered .player-progress-bar {
   opacity: 1;
-  box-shadow: 0 -3px 10px 1px rgba(255, 255, 255, 0.7);
+  -webkit-filter: drop-shadow(0 -3px 5px rgba(255, 255, 255, 0.8));
+  filter: drop-shadow(0 -3px 5px rgba(255, 255, 255, 0.8));
 }
 #player-controls-bar.progress-hovered .progress-time {
   opacity: 1;
