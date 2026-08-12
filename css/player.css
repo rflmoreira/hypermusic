@@ -1013,20 +1013,20 @@
 
 
 
-/* Progress bar (Apple Music Style - Ultra Minimalist Bottom Line) */
+/* Progress bar (Energy Line Concept) */
 .player-progress-container {
   position: absolute;
-  bottom: 0px;
+  bottom: 0px; /* Aligned exactly to the inner bottom edge */
   left: 30px;
   right: 30px;
   height: 2px;
-  background: rgba(255, 255, 255, 0.15);
+  background: transparent; /* No conventional track */
   cursor: pointer;
   z-index: 10;
-  transition: height 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s ease;
-  border-radius: 2px 2px 0 0; /* Only curve the top slightly if at the very bottom */
+  border-radius: 1px;
   pointer-events: auto; /* MUST have this, parent has none */
   touch-action: none; /* Prevent scrolling while dragging on mobile */
+  transition: height 0.2s ease;
 }
 
 /* Invisible oversized area to make hovering easier */
@@ -1034,7 +1034,7 @@
   content: '';
   position: absolute;
   top: -16px;
-  bottom: -16px;
+  bottom: -10px; /* Extended to cover bottom edge */
   left: -20px;
   right: -20px;
   z-index: -1;
@@ -1043,16 +1043,17 @@
 .player-progress-bar {
   height: 100%;
   width: 0%;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.9); /* Illuminated line */
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5); /* Glowing edge */
   pointer-events: none;
-  border-radius: 2px 2px 0 0;
-  transition: width 0.1s linear;
+  border-radius: 1px;
+  transition: box-shadow 0.2s ease, background 0.2s ease;
 }
 
 /* Time display */
 .progress-time {
   position: absolute;
-  bottom: 10px;
+  bottom: 12px;
   font-size: 11px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
@@ -1066,11 +1067,14 @@
 .progress-time.current-time { left: 0; }
 .progress-time.remaining-time { right: 0; }
 
-/* Safe Hover / Active states - Strictly localized to the line */
+/* Safe Hover / Active states */
 @media (hover: hover) {
   .player-progress-container:hover {
-    height: 4px;
-    background: rgba(255, 255, 255, 0.25);
+    height: 3px; /* Slightly thicker on hover */
+  }
+  .player-progress-container:hover .player-progress-bar {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
   }
   .player-progress-container:hover .progress-time {
     opacity: 1;
@@ -1080,8 +1084,11 @@
 
 /* JS fallback class for active dragging/touching */
 #player-controls-bar.progress-hovered .player-progress-container {
-  height: 4px;
-  background: rgba(255, 255, 255, 0.25);
+  height: 3px;
+}
+#player-controls-bar.progress-hovered .player-progress-bar {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 #player-controls-bar.progress-hovered .progress-time {
   opacity: 1;
