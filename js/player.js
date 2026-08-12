@@ -5399,9 +5399,11 @@ const MUSIC_PLAYER = (() => {
     }
 
     function seekTo(e) {
-      if (!hasValidTrack()) return;
+      if (!hasValidTrack() || e.clientX == null) return;
       const rect = container.getBoundingClientRect();
-      const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      // Ensure width is valid to avoid division by zero
+      const width = rect.width || 1;
+      const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / width));
       const dur = getMediaDuration();
       
       if (videoMode && videoMode.isVideo()) {
@@ -5412,15 +5414,25 @@ const MUSIC_PLAYER = (() => {
     }
 
     container.addEventListener('pointerdown', (e) => {
+      // Allow default actions for multi-touch (e.g. zooming), but not for primary drawing/dragging.
+      // We rely on CSS touch-action: none; for primary suppression, but just in case:
+      if (e.pointerType === 'touch' && e.cancelable) {
+        e.preventDefault();
+      }
       isDragging = true;
+      if (playerBar) playerBar.classList.add('progress-hovered');
       seekTo(e);
-      container.setPointerCapture(e.pointerId);
+      try { container.setPointerCapture(e.pointerId); } catch (err) {}
     });
 
     container.addEventListener('pointermove', (e) => {
       if (isDragging) {
+        if (e.pointerType === 'touch' && e.cancelable) {
+          e.preventDefault();
+        }
         const rect = container.getBoundingClientRect();
-        const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        const width = rect.width || 1;
+        const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / width));
         bar.style.width = `${pos * 100}%`;
         
         const dur = getMediaDuration();
@@ -5436,9 +5448,10 @@ const MUSIC_PLAYER = (() => {
       if (isDragging) {
         isDragging = false;
         seekTo(e);
-        container.releasePointerCapture(e.pointerId);
-        
-        // Touch devices often simulate a sticky hover state. Force remove it on release.
+        try { container.releasePointerCapture(e.pointerId); } catch(err) {}
+      }
+      // Clean up visual states robustly on end of interaction
+      if (e.type === 'pointerup' || e.type === 'pointercancel' || e.type === 'lostpointercapture') {
         if (e.pointerType === 'touch' || !isHovered) {
           isHovered = false;
           if (playerBar) playerBar.classList.remove('progress-hovered');
@@ -5448,6 +5461,7 @@ const MUSIC_PLAYER = (() => {
 
     container.addEventListener('pointerup', stopDrag);
     container.addEventListener('pointercancel', stopDrag);
+    container.addEventListener('lostpointercapture', stopDrag);
 
     function updateLoop() {
       if (!isDragging) {
