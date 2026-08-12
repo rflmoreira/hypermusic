@@ -1047,15 +1047,15 @@
   width: 0%;
   
   /* Gradient that fades to transparent at BOTH ends, eliminating any cuts */
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 1) 90%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 1) 90%, transparent 100%);
   
-  /* drop-shadow respects gradient transparency (unlike box-shadow), preventing rectangular edges */
-  -webkit-filter: drop-shadow(0 -2px 3px rgba(255, 255, 255, 0.6));
-  filter: drop-shadow(0 -2px 3px rgba(255, 255, 255, 0.6));
+  /* Strongly increased drop-shadow for a much brighter, visible central core */
+  -webkit-filter: drop-shadow(0 -2px 5px rgba(255, 255, 255, 0.9));
+  filter: drop-shadow(0 -2px 5px rgba(255, 255, 255, 0.9));
   
   pointer-events: none;
   border-radius: 0;
-  opacity: 0.7;
+  opacity: 0.9; /* Higher base visibility */
   transition: filter 0.2s ease, -webkit-filter 0.2s ease, opacity 0.2s ease;
 }
 
@@ -1079,9 +1079,10 @@
 /* Safe Hover / Active states */
 @media (hover: hover) {
   .player-progress-container:hover .player-progress-bar {
-    opacity: 1; /* Brighter light */
-    -webkit-filter: drop-shadow(0 -3px 5px rgba(255, 255, 255, 0.8));
-    filter: drop-shadow(0 -3px 5px rgba(255, 255, 255, 0.8));
+    opacity: 1; /* Maximum brightness */
+    /* Double-layered intense upward glow */
+    -webkit-filter: drop-shadow(0 -3px 6px rgba(255, 255, 255, 1)) drop-shadow(0 -6px 12px rgba(255, 255, 255, 0.6));
+    filter: drop-shadow(0 -3px 6px rgba(255, 255, 255, 1)) drop-shadow(0 -6px 12px rgba(255, 255, 255, 0.6));
   }
   .player-progress-container:hover .progress-time {
     opacity: 1;
@@ -1092,8 +1093,8 @@
 /* JS fallback class for active dragging/touching */
 #player-controls-bar.progress-hovered .player-progress-bar {
   opacity: 1;
-  -webkit-filter: drop-shadow(0 -3px 5px rgba(255, 255, 255, 0.8));
-  filter: drop-shadow(0 -3px 5px rgba(255, 255, 255, 0.8));
+  -webkit-filter: drop-shadow(0 -3px 6px rgba(255, 255, 255, 1)) drop-shadow(0 -6px 12px rgba(255, 255, 255, 0.6));
+  filter: drop-shadow(0 -3px 6px rgba(255, 255, 255, 1)) drop-shadow(0 -6px 12px rgba(255, 255, 255, 0.6));
 }
 #player-controls-bar.progress-hovered .progress-time {
   opacity: 1;
