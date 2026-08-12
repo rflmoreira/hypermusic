@@ -1046,17 +1046,20 @@
   height: 1px; /* Pure line of light */
   width: 0%;
   
-  /* Discreet orange gradient that fades to transparent at BOTH ends */
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 140, 0, 0.6) 50%, rgba(255, 100, 0, 1) 90%, transparent 100%);
+  /* Extremely transparent core to make it look thinner and discreet */
+  background: rgba(255, 120, 0, 0.15);
   
-  /* Subtle drop-shadow for the normal state */
-  -webkit-filter: drop-shadow(0 -1px 4px rgba(255, 120, 0, 0.8));
-  filter: drop-shadow(0 -1px 4px rgba(255, 120, 0, 0.8));
+  /* Intense, decoupled glow using box-shadow */
+  box-shadow: 0 -1px 8px 1px rgba(255, 100, 0, 0.9), 0 -1px 3px 0 rgba(255, 180, 0, 0.7);
+  
+  /* Smooth mask to ensure BOTH the core and the huge glow fade to transparent at the ends, preventing any boxy cuts */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 40%, black 95%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, black 40%, black 95%, transparent 100%);
   
   pointer-events: none;
   border-radius: 0;
-  opacity: 1; /* Clearly visible base state */
-  transition: filter 0.2s ease, -webkit-filter 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+  opacity: 1; 
+  transition: box-shadow 0.2s ease, opacity 0.2s ease, background 0.2s ease;
 }
 
 /* Time display */
@@ -1080,10 +1083,11 @@
 @media (hover: hover) {
   .player-progress-container:hover .player-progress-bar {
     opacity: 1; /* Intense brightness on hover */
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 150, 0, 0.6) 50%, rgba(255, 100, 0, 1) 90%, transparent 100%);
-    /* Double-layered intense upward orange glow */
-    -webkit-filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -4px 10px rgba(255, 120, 0, 0.7));
-    filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -4px 10px rgba(255, 120, 0, 0.7));
+    background: rgba(255, 140, 0, 0.4);
+    /* Massive double-layered upward glow */
+    box-shadow: 0 -2px 14px 3px rgba(255, 100, 0, 1), 0 -2px 6px 1px rgba(255, 200, 0, 0.8);
+    -webkit-filter: none;
+    filter: none;
   }
   .player-progress-container:hover .progress-time {
     opacity: 1;
@@ -1100,9 +1104,10 @@
 /* JS fallback class for active dragging/touching */
 #player-controls-bar.progress-hovered .player-progress-bar {
   opacity: 1;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 150, 0, 0.6) 50%, rgba(255, 100, 0, 1) 90%, transparent 100%);
-  -webkit-filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -4px 10px rgba(255, 120, 0, 0.7));
-  filter: drop-shadow(0 -2px 5px rgba(255, 100, 0, 1)) drop-shadow(0 -4px 10px rgba(255, 120, 0, 0.7));
+  background: rgba(255, 140, 0, 0.4);
+  box-shadow: 0 -2px 14px 3px rgba(255, 100, 0, 1), 0 -2px 6px 1px rgba(255, 200, 0, 0.8);
+  -webkit-filter: none;
+  filter: none;
 }
 #player-controls-bar.progress-hovered .progress-time {
   opacity: 1;
