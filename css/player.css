@@ -1147,35 +1147,47 @@
 /* Responsive: small screens */
 @media (max-width: 480px) {
   #player-controls-bar {
-    padding: 10px 16px;
+    padding: 10px 14px;
   }
 
   .player-bar .controls-inner {
+    width: calc(100% - 10px);
+    margin: 0 auto;
     gap: 8px;
   }
 
   .player-bar .controls-left {
     gap: 8px;
   }
+  
+  .player-bar .controls-right {
+    gap: 2px;
+    margin-right: -6px; /* Adjusted optical compensation for smaller icons */
+  }
+
+  .player-progress-container {
+    left: 19px; /* 14px padding + 5px indent */
+    right: 19px;
+  }
 
   .player-bar .cover-container {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 6px;
   }
 
   .player-bar .track-title {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .player-bar .track-artist {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .player-bar .play-btn,
   .player-bar .next-btn {
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     font-size: 24px;
   }
 }
