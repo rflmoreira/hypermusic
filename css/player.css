@@ -1060,6 +1060,16 @@
   transition: filter 0.2s ease, -webkit-filter 0.2s ease, opacity 0.2s ease, background 0.2s ease;
 }
 
+/* Specific visibility boost for mobile screens */
+@media (max-width: 480px) {
+  .player-progress-bar {
+    /* Shorter fade (20px) to prevent eating the whole bar on narrow screens, and stronger core (0.8 opacity) */
+    background: linear-gradient(90deg, transparent 0px, rgba(255, 140, 0, 0.8) 20px, rgba(255, 140, 0, 0.8) calc(100% - 20px), transparent 100%);
+    -webkit-filter: drop-shadow(0 -2px 6px rgba(255, 100, 0, 1)) drop-shadow(0 -2px 12px rgba(255, 150, 0, 1));
+    filter: drop-shadow(0 -2px 6px rgba(255, 100, 0, 1)) drop-shadow(0 -2px 12px rgba(255, 150, 0, 1));
+  }
+}
+
 /* Time display */
 .progress-time {
   position: absolute;
@@ -1112,6 +1122,12 @@
 #player-controls-bar.progress-hovered .controls-inner {
   opacity: 0.25;
   filter: blur(6px);
+}
+
+@media (max-width: 480px) {
+  #player-controls-bar.progress-hovered .player-progress-bar {
+    background: linear-gradient(90deg, transparent 0px, rgba(255, 160, 0, 1) 20px, rgba(255, 160, 0, 1) calc(100% - 20px), transparent 100%);
+  }
 }
 
 /* Player Controls Bar */
