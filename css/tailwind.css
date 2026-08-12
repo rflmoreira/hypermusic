@@ -1617,9 +1617,6 @@ video {
   transition-duration: 300ms;
 }
 
-.\[mm\:ss\.xx\] {
-  mm: ss.xx;
-}
 
 .hover\:rotate-90:hover {
   --tw-rotate: 90deg;

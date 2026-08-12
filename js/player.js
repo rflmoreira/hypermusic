@@ -3884,7 +3884,7 @@ const MUSIC_PLAYER = (() => {
       .trim();
   }
 
-  // Converte o texto LRC ("[mm:ss.xx] linha") em linhas ordenadas por tempo.
+  // Converte o texto LRC ("(mm:ss.xx) linha") em linhas ordenadas por tempo.
   function parseLrc(lrc) {
     if (!lrc || typeof lrc !== 'string') return [];
     const lines = [];
