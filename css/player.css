@@ -933,12 +933,12 @@
 }
 
 .player-bar .play-btn {
-  font-size: 30px;
+  font-size: 28px;
 }
 
 .player-bar .prev-btn,
 .player-bar .next-btn {
-  font-size: 26px; /* Levemente menor para parear com a robustez do Play */
+  font-size: 26px; /* Bem sutil: quase o mesmo tamanho, mas o Play ganha um pingo de destaque */
 }
 
 .player-bar .play-btn {
@@ -1211,7 +1211,7 @@
   }
   
   .player-bar .play-btn {
-    font-size: 28px;
+    font-size: 26px;
   }
   
   .player-bar .prev-btn,
