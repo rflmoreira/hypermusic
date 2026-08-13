@@ -9777,10 +9777,10 @@ const MUSIC_PLAYER = (() => {
   }
 
   // Score mínimo para aceitar um fallback do 4shared (0..1).
-  // Reduzido para 0.35 para aceitar músicas genéricas/covers já que o YouTube está indisponível sem a API paga.
-  const FOURSHARED_MIN_SCORE = 0.35;
-  const FOURSHARED_MIN_TITLE_SIM = 0.35;
-  const FOURSHARED_MIN_ARTIST_SIM = 0.3;
+  // É preferível NÃO ter fallback do que tocar a música errada.
+  const FOURSHARED_MIN_SCORE = 0.8;
+  const FOURSHARED_MIN_TITLE_SIM = 0.6;
+  const FOURSHARED_MIN_ARTIST_SIM = 0.4;
 
   /**
    * Busca uma faixa no 4shared como fonte alternativa de áudio.
