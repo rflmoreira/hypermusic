@@ -924,13 +924,21 @@
   pointer-events: none;
 }
 
-/* Play, Prev and Next buttons: identically sized for balance */
+/* Play, Prev and Next buttons */
 .player-bar .play-btn,
 .player-bar .prev-btn,
 .player-bar .next-btn {
   width: 44px;
   height: 44px;
+}
+
+.player-bar .play-btn {
   font-size: 28px;
+}
+
+.player-bar .prev-btn,
+.player-bar .next-btn {
+  font-size: 32px; /* Opticamente maior para parear com o Play */
 }
 
 .player-bar .play-btn {
@@ -1200,7 +1208,15 @@
   .player-bar .next-btn {
     width: 40px;
     height: 40px;
+  }
+  
+  .player-bar .play-btn {
     font-size: 24px;
+  }
+  
+  .player-bar .prev-btn,
+  .player-bar .next-btn {
+    font-size: 28px;
   }
 }
 
